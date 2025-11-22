@@ -25,18 +25,18 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-background relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-      
-      <div className="container px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Gotowa na
-            <span className="text-primary block mt-2">więcej klientek?</span>
+    <section id="contact" className="py-32 px-4 bg-background">
+      <div className="container mx-auto max-w-6xl">
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4">
+            <span className="text-primary font-semibold text-sm">Kontakt</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Rozpocznijmy <span className="text-primary">współpracę</span>
           </h2>
-          <p className="text-xl text-muted-foreground">
-            Umów bezpłatną konsultację i dowiedz się, jak możemy pomóc Twojemu salonowi
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Umów bezpłatną 30-minutową konsultację. Przeanalizujemy Twoją obecną sytuację 
+            i pokażemy, jak możemy zwiększyć Twoje rezerwacje.
           </p>
         </div>
 

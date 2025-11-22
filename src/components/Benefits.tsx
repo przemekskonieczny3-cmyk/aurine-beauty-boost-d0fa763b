@@ -30,29 +30,42 @@ const benefits = [
 
 const Benefits = () => {
   return (
-    <section className="py-24 bg-background">
-      <div className="container px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Dlaczego salony wybierają
-            <span className="text-primary block mt-2">właśnie nas?</span>
+    <section id="benefits" className="py-32 px-4 bg-secondary/20">
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center mb-20 animate-fade-in">
+          <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4">
+            <span className="text-primary font-semibold text-sm">Dlaczego my</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Partnerstwo oparte na <span className="text-primary">zaufaniu</span>
           </h2>
-          <p className="text-xl text-muted-foreground">
-            Bo rozumiemy, że prowadzisz biznes i potrzebujesz partnera, któremu możesz zaufać.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Nie jesteśmy kolejną agencją marketingową. Jesteśmy specjalistami, 
+            którzy rozumieją wyzwania właścicieli salonów beauty.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6">
           {benefits.map((benefit, index) => (
-            <Card 
+            <div
               key={index}
-              className="p-6 bg-card border-border hover:border-primary/50 transition-all duration-300 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              className="flex gap-6 p-8 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 animate-fade-in group hover:shadow-lg"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <CheckCircle2 className="h-8 w-8 text-primary mb-3" />
-              <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-              <p className="text-muted-foreground">{benefit.description}</p>
-            </Card>
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <CheckCircle2 className="w-6 h-6 text-primary" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mb-2">
+                  {benefit.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {benefit.description}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </div>

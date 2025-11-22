@@ -38,15 +38,17 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section className="py-24 bg-secondary/50">
-      <div className="container px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Najczęściej zadawane
-            <span className="text-primary block mt-2">pytania</span>
+    <section id="faq" className="py-32 px-4 bg-secondary/20">
+      <div className="container mx-auto max-w-4xl">
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4">
+            <span className="text-primary font-semibold text-sm">FAQ</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Najczęściej zadawane <span className="text-primary">pytania</span>
           </h2>
-          <p className="text-xl text-muted-foreground">
-            Jesteśmy tu, żeby rozwiać wszystkie Twoje wątpliwości
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Wszystko, co musisz wiedzieć przed rozpoczęciem współpracy
           </p>
         </div>
 
@@ -56,12 +58,12 @@ const FAQ = () => {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-card border border-border rounded-lg px-6 hover:border-primary/50 transition-colors"
+                className="bg-card border border-border rounded-2xl px-6 hover:border-primary/30 transition-colors"
               >
-                <AccordionTrigger className="text-left text-lg font-semibold hover:text-primary">
+                <AccordionTrigger className="text-left text-base font-semibold hover:text-primary">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pt-2">
+                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pt-2">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
