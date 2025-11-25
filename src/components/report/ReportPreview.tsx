@@ -16,6 +16,7 @@ import aurinelogo from "@/assets/aurine-report-logo.png";
 
 interface ReportData {
   clientName?: string;
+  city?: string;
   period?: string;
   budget?: string;
   impressions?: string;
@@ -66,7 +67,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-slate-950 p-12 min-h-[1400px]"
+      className="bg-[hsl(var(--brand-darker))] p-12 min-h-[1400px] max-w-[820px] mx-auto"
     >
       {/* Header with Logo */}
       <div className="flex justify-between items-center mb-12 pb-8 border-b-2 border-slate-800">
@@ -81,7 +82,10 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
           <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-3">
             {data.clientName}
           </h1>
-          <p className="text-2xl text-slate-300 font-medium">Raport Facebook Ads - {data.period}</p>
+          <p className="text-2xl text-slate-300 font-medium">
+            Raport Facebook Ads - {data.period}
+            {data.city && ` • ${data.city}`}
+          </p>
         </div>
         <div className="text-right bg-gradient-to-br from-pink-900/30 to-purple-900/30 px-8 py-6 rounded-2xl border-2 border-pink-500/30">
           <p className="text-sm text-slate-400 mb-2">Budżet kampanii</p>
