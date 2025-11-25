@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ReportPreview } from "@/components/report/ReportPreview";
+import { ReportPreviewLandscape } from "@/components/report/ReportPreviewLandscape";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -123,7 +124,7 @@ const ReportGenerator = () => {
   };
 
   const downloadAsImage = async () => {
-    const element = document.getElementById("report-preview");
+    const element = document.getElementById("report-preview-landscape");
     if (!element) return;
 
     setIsGenerating(true);
@@ -131,6 +132,8 @@ const ReportGenerator = () => {
       const canvas = await html2canvas(element, {
         scale: 2,
         backgroundColor: "#050509",
+        width: 1920,
+        height: 1080,
       });
 
       const link = document.createElement("a");
@@ -140,7 +143,7 @@ const ReportGenerator = () => {
 
       toast({
         title: "Obraz pobrany!",
-        description: "Raport został zapisany jako PNG",
+        description: "Raport został zapisany jako PNG w formacie poziomym 16:9",
       });
     } catch (error) {
       toast({
@@ -202,9 +205,9 @@ const ReportGenerator = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 h-[calc(100vh-220px)] overflow-auto flex justify-center">
-              <div className="w-[820px]">
-                <ReportPreview data={reportData} />
+            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 h-[calc(100vh-220px)] overflow-auto flex items-center justify-center">
+              <div className="w-full max-w-[1920px]">
+                <ReportPreviewLandscape data={reportData} />
               </div>
             </div>
           </div>
