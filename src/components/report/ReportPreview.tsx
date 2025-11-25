@@ -66,27 +66,27 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-white p-12 min-h-[1400px]"
+      className="bg-slate-950 p-12 min-h-[1400px]"
     >
       {/* Header with Logo */}
-      <div className="flex justify-between items-center mb-12 pb-8 border-b-2 border-slate-200">
+      <div className="flex justify-between items-center mb-12 pb-8 border-b-2 border-slate-800">
         <div>
           <div className="flex items-center gap-3 mb-4">
             <img src={aurinelogo} alt="Aurine" className="w-16 h-16" />
             <div>
-              <h2 className="text-xl font-bold text-slate-900">Aurine Agency</h2>
-              <p className="text-pink-600 text-sm font-medium">Digital Marketing Excellence</p>
+              <h2 className="text-xl font-bold text-white">Aurine Agency</h2>
+              <p className="text-pink-400 text-sm font-medium">Digital Marketing Excellence</p>
             </div>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-3">
             {data.clientName}
           </h1>
-          <p className="text-2xl text-slate-600 font-medium">Raport Facebook Ads - {data.period}</p>
+          <p className="text-2xl text-slate-300 font-medium">Raport Facebook Ads - {data.period}</p>
         </div>
-        <div className="text-right bg-gradient-to-br from-pink-50 to-purple-50 px-8 py-6 rounded-2xl border-2 border-pink-200">
-          <p className="text-sm text-slate-600 mb-2">Budżet kampanii</p>
-          <p className="text-4xl font-bold text-pink-600">{data.budget}</p>
-          <p className="text-slate-500 text-sm font-medium">PLN</p>
+        <div className="text-right bg-gradient-to-br from-pink-900/30 to-purple-900/30 px-8 py-6 rounded-2xl border-2 border-pink-500/30">
+          <p className="text-sm text-slate-400 mb-2">Budżet kampanii</p>
+          <p className="text-4xl font-bold text-pink-400">{data.budget}</p>
+          <p className="text-slate-400 text-sm font-medium">PLN</p>
         </div>
       </div>
 
@@ -113,38 +113,38 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
 
       {/* Key Metrics Grid */}
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-slate-800 mb-6">Kluczowe metryki</h3>
+        <h3 className="text-2xl font-bold text-white mb-6">Kluczowe metryki</h3>
       </div>
       
       <div className="grid grid-cols-4 gap-6 mb-6">
-        <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 shadow-lg border-2 border-pink-200 hover:shadow-xl transition-all">
-          <div className="bg-white/60 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-            <TrendingUp className="w-6 h-6 text-pink-600" />
+        <div className="bg-gradient-to-br from-pink-900/40 to-pink-800/40 rounded-2xl p-6 shadow-lg border-2 border-pink-500/30 hover:shadow-xl hover:border-pink-500/50 transition-all">
+          <div className="bg-pink-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+            <TrendingUp className="w-6 h-6 text-pink-400" />
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">Wyświetlenia</p>
-          <p className="text-4xl font-bold text-slate-900 mb-1">{data.impressions}</p>
-          <p className="text-pink-600 text-xs font-medium">Zasięg Facebook</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">Wyświetlenia</p>
+          <p className="text-4xl font-bold text-white mb-1">{data.impressions}</p>
+          <p className="text-pink-400 text-xs font-medium">Zasięg Facebook</p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-lg border-2 border-purple-200 hover:shadow-xl transition-all">
-          <div className="bg-white/60 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-            <Target className="w-6 h-6 text-purple-600" />
+        <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/40 rounded-2xl p-6 shadow-lg border-2 border-purple-500/30 hover:shadow-xl hover:border-purple-500/50 transition-all">
+          <div className="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+            <Target className="w-6 h-6 text-purple-400" />
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">Zasięg</p>
-          <p className="text-4xl font-bold text-slate-900 mb-1">{data.reach}</p>
-          <p className="text-purple-600 text-xs font-medium">Unikalni użytkownicy</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">Zasięg</p>
+          <p className="text-4xl font-bold text-white mb-1">{data.reach}</p>
+          <p className="text-purple-400 text-xs font-medium">Unikalni użytkownicy</p>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-lg border-2 border-blue-200 hover:shadow-xl transition-all">
-          <div className="bg-white/60 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-            <Facebook className="w-6 h-6 text-blue-600" />
+        <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/40 rounded-2xl p-6 shadow-lg border-2 border-blue-500/30 hover:shadow-xl hover:border-blue-500/50 transition-all">
+          <div className="bg-blue-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+            <Facebook className="w-6 h-6 text-blue-400" />
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">Kliknięcia</p>
-          <p className="text-4xl font-bold text-slate-900 mb-1">{data.clicks}</p>
-          <p className="text-blue-600 text-xs font-medium">Akcje użytkowników</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">Kliknięcia</p>
+          <p className="text-4xl font-bold text-white mb-1">{data.clicks}</p>
+          <p className="text-blue-400 text-xs font-medium">Akcje użytkowników</p>
         </div>
 
-        <div className="bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl p-6 shadow-lg border-2 border-pink-700 hover:shadow-xl transition-all">
+        <div className="bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl p-6 shadow-lg border-2 border-pink-500 hover:shadow-xl hover:shadow-pink-500/20 transition-all">
           <div className="bg-white/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
             <CheckCircle2 className="w-6 h-6 text-white" />
           </div>
@@ -155,48 +155,48 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </div>
 
       <div className="grid grid-cols-3 gap-6 mb-12">
-        <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-all">
+        <div className="bg-slate-900/50 rounded-2xl p-6 shadow-md border border-slate-700 hover:shadow-lg hover:border-pink-500/50 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gradient-to-br from-pink-100 to-pink-200 w-12 h-12 rounded-xl flex items-center justify-center">
-              <Target className="w-6 h-6 text-pink-700" />
+            <div className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 w-12 h-12 rounded-xl flex items-center justify-center">
+              <Target className="w-6 h-6 text-pink-400" />
             </div>
-            <span className="text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">Wysoki</span>
+            <span className="text-xs font-semibold text-green-400 bg-green-500/20 px-3 py-1 rounded-full">Wysoki</span>
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">CTR (Click-through rate)</p>
-          <p className="text-4xl font-bold text-slate-900">{data.ctr}%</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">CTR (Click-through rate)</p>
+          <p className="text-4xl font-bold text-white">{data.ctr}%</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-all">
+        <div className="bg-slate-900/50 rounded-2xl p-6 shadow-md border border-slate-700 hover:shadow-lg hover:border-purple-500/50 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-12 h-12 rounded-xl flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6 text-purple-700" />
+            <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 w-12 h-12 rounded-xl flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-purple-400" />
             </div>
-            <span className="text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">Sukces</span>
+            <span className="text-xs font-semibold text-green-400 bg-green-500/20 px-3 py-1 rounded-full">Sukces</span>
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">Konwersje</p>
-          <p className="text-4xl font-bold text-slate-900">{data.conversions}</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">Konwersje</p>
+          <p className="text-4xl font-bold text-white">{data.conversions}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-200 hover:shadow-lg transition-all">
+        <div className="bg-slate-900/50 rounded-2xl p-6 shadow-md border border-slate-700 hover:shadow-lg hover:border-blue-500/50 transition-all">
           <div className="flex items-center justify-between mb-4">
-            <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-12 h-12 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-blue-700" />
+            <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 w-12 h-12 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-blue-400" />
             </div>
-            <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Optymalne</span>
+            <span className="text-xs font-semibold text-blue-400 bg-blue-500/20 px-3 py-1 rounded-full">Optymalne</span>
           </div>
-          <p className="text-slate-600 text-sm font-semibold mb-2">Koszt / konwersja</p>
-          <p className="text-4xl font-bold text-slate-900">{data.costPerConversion} PLN</p>
+          <p className="text-slate-300 text-sm font-semibold mb-2">Koszt / konwersja</p>
+          <p className="text-4xl font-bold text-white">{data.costPerConversion} PLN</p>
         </div>
       </div>
 
       {/* Charts Section */}
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-slate-800 mb-6">Analiza wydajności</h3>
+        <h3 className="text-2xl font-bold text-white mb-6">Analiza wydajności</h3>
       </div>
       
       <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-white rounded-2xl p-8 shadow-md border border-slate-200">
-          <h3 className="text-slate-800 font-bold text-lg mb-6 flex items-center gap-3">
+        <div className="bg-slate-900/50 rounded-2xl p-8 shadow-md border border-slate-700">
+          <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-3">
             <div className="bg-gradient-to-br from-pink-500 to-pink-600 w-10 h-10 rounded-xl flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
@@ -214,18 +214,18 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
                 dataKey="value"
               >
                 <Cell fill="#ec4899" />
-                <Cell fill="#e5e7eb" />
+                <Cell fill="#334155" />
               </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          <p className="text-center text-slate-600 mt-4 font-medium">
+          <p className="text-center text-slate-300 mt-4 font-medium">
             {data.bookings} rezerwacji z {data.conversions} konwersji
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 shadow-md border border-slate-200">
-          <h3 className="text-slate-800 font-bold text-lg mb-6 flex items-center gap-3">
+        <div className="bg-slate-900/50 rounded-2xl p-8 shadow-md border border-slate-700">
+          <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-3">
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 w-10 h-10 rounded-xl flex items-center justify-center">
               <Target className="w-5 h-5 text-white" />
             </div>
@@ -243,18 +243,18 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
                 dataKey="value"
               >
                 <Cell fill="#3b82f6" />
-                <Cell fill="#e5e7eb" />
+                <Cell fill="#334155" />
               </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          <p className="text-center text-slate-600 mt-4 font-medium">Wysoki poziom interakcji</p>
+          <p className="text-center text-slate-300 mt-4 font-medium">Wysoki poziom interakcji</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-12">
-        <div className="bg-white rounded-2xl p-8 shadow-md border border-slate-200">
-          <h3 className="text-slate-800 font-bold text-lg mb-6 flex items-center gap-3">
+        <div className="bg-slate-900/50 rounded-2xl p-8 shadow-md border border-slate-700">
+          <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-3">
             <div className="bg-gradient-to-br from-purple-500 to-purple-600 w-10 h-10 rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
@@ -262,9 +262,9 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
           </h3>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={weeklyData}>
-              <XAxis dataKey="week" stroke="#64748b" style={{ fontSize: '12px' }} />
-              <YAxis stroke="#64748b" style={{ fontSize: '12px' }} />
-              <Tooltip />
+              <XAxis dataKey="week" stroke="#94a3b8" style={{ fontSize: '12px' }} />
+              <YAxis stroke="#94a3b8" style={{ fontSize: '12px' }} />
+              <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }} />
               <Line
                 type="monotone"
                 dataKey="reach"
@@ -283,8 +283,8 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 shadow-md border border-slate-200">
-          <h3 className="text-slate-800 font-bold text-lg mb-6 flex items-center gap-3">
+        <div className="bg-slate-900/50 rounded-2xl p-8 shadow-md border border-slate-700">
+          <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-3">
             <div className="bg-gradient-to-br from-pink-500 to-pink-600 w-10 h-10 rounded-xl flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
@@ -292,9 +292,9 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
           </h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={dailyBookings}>
-              <XAxis dataKey="day" stroke="#64748b" style={{ fontSize: '12px' }} />
-              <YAxis stroke="#64748b" style={{ fontSize: '12px' }} />
-              <Tooltip />
+              <XAxis dataKey="day" stroke="#94a3b8" style={{ fontSize: '12px' }} />
+              <YAxis stroke="#94a3b8" style={{ fontSize: '12px' }} />
+              <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }} />
               <Bar dataKey="value" fill="#ec4899" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -302,62 +302,62 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </div>
 
       {/* Marketing Recommendations */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl p-10 border-2 border-slate-200 shadow-lg">
+      <div className="bg-slate-900/50 rounded-3xl p-10 border-2 border-slate-700 shadow-lg">
         <div className="flex items-center gap-4 mb-8">
           <div className="bg-gradient-to-br from-yellow-400 to-orange-500 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg">
             <Lightbulb className="w-7 h-7 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-slate-800">Rekomendacje marketingowe</h2>
+          <h2 className="text-3xl font-bold text-white">Rekomendacje marketingowe</h2>
         </div>
         
         <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-7 border-2 border-pink-200 shadow-sm hover:shadow-md transition-all">
+          <div className="bg-slate-800/50 rounded-2xl p-7 border-2 border-pink-500/30 shadow-sm hover:shadow-md hover:border-pink-500/50 transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-pink-100 w-10 h-10 rounded-xl flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-pink-600" />
+              <div className="bg-pink-500/20 w-10 h-10 rounded-xl flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-pink-400" />
               </div>
-              <h4 className="text-pink-600 font-bold text-lg">Optymalizacja budżetu</h4>
+              <h4 className="text-pink-400 font-bold text-lg">Optymalizacja budżetu</h4>
             </div>
-            <p className="text-slate-700 leading-relaxed">
+            <p className="text-slate-300 leading-relaxed">
               Zwiększ budżet o 20% w weekendy, kiedy notujemy najwyższą konwersję. Skoncentruj wydatki na godzinach 
               18:00-21:00, gdy aktywność użytkowników jest najwyższa.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl p-7 border-2 border-purple-200 shadow-sm hover:shadow-md transition-all">
+          <div className="bg-slate-800/50 rounded-2xl p-7 border-2 border-purple-500/30 shadow-sm hover:shadow-md hover:border-purple-500/50 transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-purple-100 w-10 h-10 rounded-xl flex items-center justify-center">
-                <Target className="w-5 h-5 text-purple-600" />
+              <div className="bg-purple-500/20 w-10 h-10 rounded-xl flex items-center justify-center">
+                <Target className="w-5 h-5 text-purple-400" />
               </div>
-              <h4 className="text-purple-600 font-bold text-lg">Targetowanie</h4>
+              <h4 className="text-purple-400 font-bold text-lg">Targetowanie</h4>
             </div>
-            <p className="text-slate-700 leading-relaxed">
+            <p className="text-slate-300 leading-relaxed">
               Rozszerz grupę docelową o kobiety 35-50 lat zainteresowane wellness. Dodaj remarketingowe kampanie 
               dla osób, które odwiedziły stronę ale nie dokonały rezerwacji.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl p-7 border-2 border-blue-200 shadow-sm hover:shadow-md transition-all">
+          <div className="bg-slate-800/50 rounded-2xl p-7 border-2 border-blue-500/30 shadow-sm hover:shadow-md hover:border-blue-500/50 transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-blue-100 w-10 h-10 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
+              <div className="bg-blue-500/20 w-10 h-10 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-blue-400" />
               </div>
-              <h4 className="text-blue-600 font-bold text-lg">Kreacje reklamowe</h4>
+              <h4 className="text-blue-400 font-bold text-lg">Kreacje reklamowe</h4>
             </div>
-            <p className="text-slate-700 leading-relaxed">
+            <p className="text-slate-300 leading-relaxed">
               Testuj video ads pokazujące efekty przed/po. Reklamy z treścią video mają o 45% wyższy CTR. 
               Dodaj social proof - opinie zadowolonych klientek.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl p-7 border-2 border-pink-200 shadow-sm hover:shadow-md transition-all">
+          <div className="bg-slate-800/50 rounded-2xl p-7 border-2 border-pink-500/30 shadow-sm hover:shadow-md hover:border-pink-500/50 transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-pink-100 w-10 h-10 rounded-xl flex items-center justify-center">
-                <Facebook className="w-5 h-5 text-pink-600" />
+              <div className="bg-pink-500/20 w-10 h-10 rounded-xl flex items-center justify-center">
+                <Facebook className="w-5 h-5 text-pink-400" />
               </div>
-              <h4 className="text-pink-600 font-bold text-lg">Instagram Stories</h4>
+              <h4 className="text-pink-400 font-bold text-lg">Instagram Stories</h4>
             </div>
-            <p className="text-slate-700 leading-relaxed">
+            <p className="text-slate-300 leading-relaxed">
               Uruchom równoległą kampanię w Instagram Stories z promocją -15% dla nowych klientek. 
               Stories mają potencjał zwiększyć zasięg o dodatkowe 30%.
             </p>
@@ -366,14 +366,14 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </div>
 
       {/* Footer */}
-      <div className="mt-12 pt-8 border-t-2 border-slate-200 flex justify-between items-center">
+      <div className="mt-12 pt-8 border-t-2 border-slate-800 flex justify-between items-center">
         <div>
-          <p className="text-slate-600 font-medium">Raport wygenerowany przez Aurine Agency</p>
+          <p className="text-slate-300 font-medium">Raport wygenerowany przez Aurine Agency</p>
           <p className="text-slate-500 text-sm mt-1">Data: {new Date().toLocaleDateString('pl-PL')}</p>
         </div>
         <div className="text-right">
-          <p className="text-pink-600 font-bold text-lg">aurine-agency.com</p>
-          <p className="text-slate-600 text-sm mt-1">kontakt@aurine-agency.com</p>
+          <p className="text-pink-400 font-bold text-lg">aurine-agency.com</p>
+          <p className="text-slate-400 text-sm mt-1">kontakt@aurine-agency.com</p>
         </div>
       </div>
     </div>
