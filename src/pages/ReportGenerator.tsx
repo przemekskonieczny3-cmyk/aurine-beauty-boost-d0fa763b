@@ -33,6 +33,7 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<ReportFormData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const containerClass = isLandscape ? "mx-auto" : "max-w-7xl mx-auto";
 
   const {
     register,
@@ -158,7 +159,7 @@ const ReportGenerator = () => {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--brand-dark))] p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className={containerClass}>
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4">
             Generator Raportów Facebook Ads
@@ -205,7 +206,7 @@ const ReportGenerator = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 h-[calc(100vh-220px)] overflow-auto flex items-center justify-center">
+            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 flex items-center justify-center">
               <div className="w-full max-w-[1920px]">
                 <ReportPreviewLandscape data={reportData} />
               </div>
