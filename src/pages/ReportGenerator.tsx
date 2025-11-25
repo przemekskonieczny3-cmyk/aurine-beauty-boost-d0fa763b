@@ -55,19 +55,26 @@ const ReportGenerator = () => {
 
     setIsGenerating(true);
     try {
-      // Temporarily set fixed width for PDF generation
+      // Zapewnij stałą szerokość A4 na potrzeby PDF (pionowo)
       const originalWidth = element.style.width;
-      element.style.width = "210mm"; // A4 width
-      
+      const originalAspect = element.style.aspectRatio;
+      const originalMaxWidth = element.style.maxWidth;
+
+      element.style.width = "210mm"; // szerokość A4
+      element.style.aspectRatio = "";
+      element.style.maxWidth = "none";
+
       const canvas = await html2canvas(element, {
         scale: 3,
         backgroundColor: "#050509",
-        width: 794, // A4 width in pixels at 96 DPI
+        width: 794, // szerokość A4 w px przy 96 DPI
         windowWidth: 794,
       });
 
-      // Restore original width
+      // Przywrócenie oryginalnych stylów
       element.style.width = originalWidth;
+      element.style.aspectRatio = originalAspect;
+      element.style.maxWidth = originalMaxWidth;
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -84,7 +91,7 @@ const ReportGenerator = () => {
       const ratio = pageWidth / imgWidth;
       const pdfHeight = imgHeight * ratio;
 
-      // Add multiple pages if content is longer than one page
+      // Obsługa wielu stron, jeśli raport jest długi
       let heightLeft = pdfHeight;
       let position = 0;
 
@@ -158,245 +165,290 @@ const ReportGenerator = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          <Card className="p-8 bg-slate-900/50 border-slate-800">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              Dane kampanii Facebook Ads
-            </h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {isLandscape && reportData ? (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
               <div>
-                <Label htmlFor="clientName" className="text-white">
-                  Nazwa salonu
-                </Label>
-                <Input
-                  id="clientName"
-                  {...register("clientName")}
-                  placeholder="np. Beauty Studio"
-                  className="bg-slate-950 border-slate-700 text-white"
-                />
-                {errors.clientName && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {errors.clientName.message}
-                  </p>
-                )}
+                <h2 className="text-2xl font-bold text-white">
+                  Podgląd - tryb pełnoekranowy (poziomy)
+                </h2>
+                <p className="text-slate-400 text-sm">
+                  Widok poziomy dopasowany do ekranu komputera. Kliknij "Powrót do edycji", aby wrócić do formularza.
+                </p>
               </div>
-
-              <div>
-                <Label htmlFor="city" className="text-white">
-                  Miasto salonu
-                </Label>
-                <Input
-                  id="city"
-                  {...register("city")}
-                  placeholder="np. Warszawa"
-                  className="bg-slate-950 border-slate-700 text-white"
-                />
-                {errors.city && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {errors.city.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="period" className="text-white">
-                    Okres
-                  </Label>
-                  <Input
-                    id="period"
-                    {...register("period")}
-                    placeholder="Styczeń 2024"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.period && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.period.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="budget" className="text-white">
-                    Budżet (PLN)
-                  </Label>
-                  <Input
-                    id="budget"
-                    {...register("budget")}
-                    placeholder="5,000"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.budget && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.budget.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="impressions" className="text-white">
-                    Wyświetlenia
-                  </Label>
-                  <Input
-                    id="impressions"
-                    {...register("impressions")}
-                    placeholder="150,000"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.impressions && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.impressions.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="reach" className="text-white">
-                    Zasięg
-                  </Label>
-                  <Input
-                    id="reach"
-                    {...register("reach")}
-                    placeholder="85,000"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.reach && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.reach.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="clicks" className="text-white">
-                    Kliknięcia
-                  </Label>
-                  <Input
-                    id="clicks"
-                    {...register("clicks")}
-                    placeholder="3,500"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.clicks && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.clicks.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="ctr" className="text-white">
-                    CTR (%)
-                  </Label>
-                  <Input
-                    id="ctr"
-                    {...register("ctr")}
-                    placeholder="2.33"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.ctr && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.ctr.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="conversions" className="text-white">
-                    Konwersje
-                  </Label>
-                  <Input
-                    id="conversions"
-                    {...register("conversions")}
-                    placeholder="245"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.conversions && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.conversions.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="costPerConversion" className="text-white">
-                    Koszt / konwersja (PLN)
-                  </Label>
-                  <Input
-                    id="costPerConversion"
-                    {...register("costPerConversion")}
-                    placeholder="20.41"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.costPerConversion && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.costPerConversion.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="col-span-2">
-                  <Label htmlFor="bookings" className="text-white">
-                    Rezerwacje wizyt
-                  </Label>
-                  <Input
-                    id="bookings"
-                    {...register("bookings")}
-                    placeholder="178"
-                    className="bg-slate-950 border-slate-700 text-white"
-                  />
-                  {errors.bookings && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.bookings.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-              >
-                Generuj podgląd raportu
-              </Button>
-            </form>
-          </Card>
-
-          {reportData && (
-            <div className="space-y-4">
-              <div className="flex justify-between items-center flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-white">Podgląd</h2>
-                <div className="flex gap-3 items-center flex-wrap">
-                  <Button
-                    onClick={() => setIsLandscape(!isLandscape)}
-                    variant="outline"
-                    className="border-slate-700 text-white hover:bg-slate-800"
-                  >
-                    {isLandscape ? "Widok pionowy" : "Widok poziomy"}
-                  </Button>
-                  <Button
-                    onClick={downloadAsImage}
-                    disabled={isGenerating}
-                    variant="outline"
-                    className="border-pink-600 text-pink-400 hover:bg-pink-950"
-                  >
-                    {isGenerating ? "Pobieranie..." : "Pobierz PNG"}
-                  </Button>
-                  <Button
-                    onClick={generatePDF}
-                    disabled={isGenerating}
-                    className="bg-pink-600 hover:bg-pink-700"
-                  >
-                    {isGenerating ? "Generowanie..." : "Pobierz PDF"}
-                  </Button>
-                </div>
-              </div>
-              <div className={`border-2 border-slate-700 rounded-lg overflow-auto ${isLandscape ? 'max-h-[80vh]' : ''}`}>
-                <ReportPreview data={reportData} isLandscape={isLandscape} />
+              <div className="flex gap-3 flex-wrap">
+                <Button
+                  onClick={() => setIsLandscape(false)}
+                  variant="outline"
+                  className="border-slate-700 text-white hover:bg-slate-800"
+                >
+                  Powrót do edycji
+                </Button>
+                <Button
+                  onClick={downloadAsImage}
+                  disabled={isGenerating}
+                  variant="outline"
+                  className="border-pink-600 text-pink-400 hover:bg-pink-950"
+                >
+                  {isGenerating ? "Pobieranie..." : "Pobierz PNG"}
+                </Button>
+                <Button
+                  onClick={generatePDF}
+                  disabled={isGenerating}
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  {isGenerating ? "Generowanie..." : "Pobierz PDF"}
+                </Button>
               </div>
             </div>
-          )}
-        </div>
+
+            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 flex justify-center items-center">
+              <div className="w-full max-w-5xl">
+                <ReportPreview data={reportData} isLandscape />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-2 gap-8">
+            <Card className="p-8 bg-slate-900/50 border-slate-800">
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Dane kampanii Facebook Ads
+              </h2>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div>
+                  <Label htmlFor="clientName" className="text-white">
+                    Nazwa salonu
+                  </Label>
+                  <Input
+                    id="clientName"
+                    {...register("clientName")}
+                    placeholder="np. Beauty Studio"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.clientName && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.clientName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="city" className="text-white">
+                    Miasto salonu
+                  </Label>
+                  <Input
+                    id="city"
+                    {...register("city")}
+                    placeholder="np. Warszawa"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.city && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.city.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="period" className="text-white">
+                      Okres
+                    </Label>
+                    <Input
+                      id="period"
+                      {...register("period")}
+                      placeholder="Styczeń 2024"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.period && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.period.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="budget" className="text-white">
+                      Budżet (PLN)
+                    </Label>
+                    <Input
+                      id="budget"
+                      {...register("budget")}
+                      placeholder="5,000"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.budget && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.budget.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="impressions" className="text-white">
+                      Wyświetlenia
+                    </Label>
+                    <Input
+                      id="impressions"
+                      {...register("impressions")}
+                      placeholder="150,000"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.impressions && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.impressions.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="reach" className="text-white">
+                      Zasięg
+                    </Label>
+                    <Input
+                      id="reach"
+                      {...register("reach")}
+                      placeholder="85,000"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.reach && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.reach.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="clicks" className="text-white">
+                      Kliknięcia
+                    </Label>
+                    <Input
+                      id="clicks"
+                      {...register("clicks")}
+                      placeholder="3,500"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.clicks && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.clicks.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="ctr" className="text-white">
+                      CTR (%)
+                    </Label>
+                    <Input
+                      id="ctr"
+                      {...register("ctr")}
+                      placeholder="2.33"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.ctr && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.ctr.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="conversions" className="text-white">
+                      Konwersje
+                    </Label>
+                    <Input
+                      id="conversions"
+                      {...register("conversions")}
+                      placeholder="245"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.conversions && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.conversions.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="costPerConversion" className="text-white">
+                      Koszt / konwersja (PLN)
+                    </Label>
+                    <Input
+                      id="costPerConversion"
+                      {...register("costPerConversion")}
+                      placeholder="20.41"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.costPerConversion && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.costPerConversion.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label htmlFor="bookings" className="text-white">
+                      Rezerwacje wizyt
+                    </Label>
+                    <Input
+                      id="bookings"
+                      {...register("bookings")}
+                      placeholder="178"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                    {errors.bookings && (
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.bookings.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                >
+                  Generuj podgląd raportu
+                </Button>
+              </form>
+            </Card>
+
+            {reportData && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <h2 className="text-2xl font-bold text-white">Podgląd</h2>
+                  <div className="flex gap-3 items-center flex-wrap">
+                    <Button
+                      onClick={() => setIsLandscape(true)}
+                      variant="outline"
+                      className="border-slate-700 text-white hover:bg-slate-800"
+                    >
+                      Widok na pełnym ekranie
+                    </Button>
+                    <Button
+                      onClick={downloadAsImage}
+                      disabled={isGenerating}
+                      variant="outline"
+                      className="border-pink-600 text-pink-400 hover:bg-pink-950"
+                    >
+                      {isGenerating ? "Pobieranie..." : "Pobierz PNG"}
+                    </Button>
+                    <Button
+                      onClick={generatePDF}
+                      disabled={isGenerating}
+                      className="bg-pink-600 hover:bg-pink-700"
+                    >
+                      {isGenerating ? "Generowanie..." : "Pobierz PDF"}
+                    </Button>
+                  </div>
+                </div>
+                <div className="border-2 border-slate-700 rounded-lg overflow-hidden">
+                  <ReportPreview data={reportData} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
