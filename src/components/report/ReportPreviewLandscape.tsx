@@ -27,14 +27,20 @@ interface ReportPreviewLandscapeProps {
 
 export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) => {
   // Calculate chart data - zawsze pokazuj wykresy, użyj przykładowych danych jeśli brak
-  const engagementValue = data.engagementRate ? parseFloat(data.engagementRate) : 23;
+  // Helper function to parse numbers with potential formatting
+  const parseNumber = (str?: string): number => {
+    if (!str) return 0;
+    return parseFloat(str.replace(/,/g, "").replace(/\s/g, ""));
+  };
+
+  const engagementValue = data.engagementRate ? parseNumber(data.engagementRate) : 23;
   const engagementData = [
     { name: "Zaangażowani", value: engagementValue, color: "#3b82f6" },
     { name: "Pozostali", value: 100 - engagementValue, color: "#27272a" },
   ];
 
-  const bookingsNum = data.bookings ? parseFloat(data.bookings.replace(/,/g, "")) : 33;
-  const conversionsNum = data.conversions ? parseFloat(data.conversions.replace(/,/g, "")) : 50;
+  const bookingsNum = parseNumber(data.bookings) || 33;
+  const conversionsNum = parseNumber(data.conversions) || 50;
   const conversionPercentage = conversionsNum > 0 ? (bookingsNum / conversionsNum) * 100 : 66;
   const conversionData = [
     { name: "Rezerwacje", value: conversionPercentage, color: "#ec4899" },
@@ -44,8 +50,8 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
   const weeklyData = data.weeklyReachData && data.weeklyClicksData
     ? data.weeklyReachData.split(",").map((reach, i) => ({
         label: `T${i + 1}`,
-        value1: parseFloat(reach.trim()),
-        value2: parseFloat(data.weeklyClicksData!.split(",")[i]?.trim() || "0"),
+        value1: parseNumber(reach),
+        value2: parseNumber(data.weeklyClicksData!.split(",")[i] || "0"),
       }))
     : [
         { label: "T1", value1: 15000, value2: 650 },
@@ -57,7 +63,7 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
   const dailyBookings = data.dailyBookingsData
     ? data.dailyBookingsData.split(",").map((val, i) => ({
         label: ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"][i] || `D${i + 1}`,
-        value: parseFloat(val.trim()),
+        value: parseNumber(val),
       }))
     : [
         { label: "Pn", value: 3 },
@@ -117,12 +123,37 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-3">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-rose-500/10 border border-pink-500/20">
                 <Sparkles className="w-3.5 h-3.5 text-pink-400" />
                 <span className="text-[10px] uppercase tracking-widest text-pink-300">
                   Facebook Ads
                 </span>
+              </div>
+              
+              <div className="bg-zinc-900/50 rounded-xl p-4 space-y-2 border border-zinc-800/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                    <Target className="w-4 h-4 text-white" />
+                  </div>
+                  <p className="text-xs font-semibold text-white">Cel kampanii</p>
+                </div>
+                <p className="text-[10px] text-zinc-400 leading-relaxed">
+                  Zwiększenie rezerwacji wizyt w salonie beauty poprzez targetowane kampanie Facebook Ads
+                </p>
+              </div>
+
+              <div className="bg-zinc-900/50 rounded-xl p-4 space-y-2 border border-zinc-800/50">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-white" />
+                  </div>
+                  <p className="text-xs font-semibold text-white">Status</p>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                  <span className="text-[9px] text-emerald-300 font-medium">Aktywna</span>
+                </div>
               </div>
             </div>
           </div>

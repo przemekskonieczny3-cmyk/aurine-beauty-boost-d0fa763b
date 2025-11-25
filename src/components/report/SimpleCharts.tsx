@@ -8,34 +8,50 @@ interface PieChartData {
 export const SimplePieChart = ({ data, size = 200 }: { data: PieChartData[]; size?: number }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   let currentAngle = -90; // Start from top
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2 - 20;
+  const innerRadius = size / 2 - 60;
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
+      {/* Background circle */}
       <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={size / 2 - 20}
+        cx={centerX}
+        cy={centerY}
+        r={radius}
         fill="none"
         stroke="#27272a"
         strokeWidth="40"
       />
+      {/* Draw segments */}
       {data.map((item, index) => {
         const percentage = (item.value / total) * 100;
         const angle = (percentage / 100) * 360;
         const endAngle = currentAngle + angle;
         
-        // Calculate arc path
-        const startX = size / 2 + (size / 2 - 20) * Math.cos((currentAngle * Math.PI) / 180);
-        const startY = size / 2 + (size / 2 - 20) * Math.sin((currentAngle * Math.PI) / 180);
-        const endX = size / 2 + (size / 2 - 20) * Math.cos((endAngle * Math.PI) / 180);
-        const endY = size / 2 + (size / 2 - 20) * Math.sin((endAngle * Math.PI) / 180);
+        // Calculate points for the donut segment
+        const startAngleRad = (currentAngle * Math.PI) / 180;
+        const endAngleRad = (endAngle * Math.PI) / 180;
+        
+        const outerStartX = centerX + radius * Math.cos(startAngleRad);
+        const outerStartY = centerY + radius * Math.sin(startAngleRad);
+        const outerEndX = centerX + radius * Math.cos(endAngleRad);
+        const outerEndY = centerY + radius * Math.sin(endAngleRad);
+        
+        const innerStartX = centerX + innerRadius * Math.cos(startAngleRad);
+        const innerStartY = centerY + innerRadius * Math.sin(startAngleRad);
+        const innerEndX = centerX + innerRadius * Math.cos(endAngleRad);
+        const innerEndY = centerY + innerRadius * Math.sin(endAngleRad);
         
         const largeArcFlag = angle > 180 ? 1 : 0;
         
+        // Create donut path
         const pathData = [
-          `M ${size / 2} ${size / 2}`,
-          `L ${startX} ${startY}`,
-          `A ${size / 2 - 20} ${size / 2 - 20} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+          `M ${outerStartX} ${outerStartY}`,
+          `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${outerEndX} ${outerEndY}`,
+          `L ${innerEndX} ${innerEndY}`,
+          `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}`,
           'Z'
         ].join(' ');
         
@@ -50,10 +66,12 @@ export const SimplePieChart = ({ data, size = 200 }: { data: PieChartData[]; siz
           />
         );
       })}
+      
+      {/* Center hole */}
       <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={size / 2 - 60}
+        cx={centerX}
+        cy={centerY}
+        r={innerRadius}
         fill="#000000"
       />
     </svg>

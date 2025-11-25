@@ -19,22 +19,24 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY not configured");
     }
 
-    const prompt = `Na podstawie poniższych danych kampanii Facebook Ads dla salonu beauty, wygeneruj 4-5 konkretnych, praktycznych rekomendacji marketingowych. Każda rekomendacja powinna być krótka (max 2 zdania), konkretna i wykonalna.
+    const prompt = `Jesteś doświadczonym specjalistą od Facebook Ads, który od lat współpracuje z salonami beauty. Rozmawiasz bezpośrednio z właścicielką salonu ${data.clientName} w ${data.city}. 
 
-Dane kampanii:
-- Nazwa salonu: ${data.clientName}
-- Miasto: ${data.city}
+Przeanalizuj wyniki jej ostatniej kampanii i napisz 4-5 konkretnych, przyjaznych rekomendacji - tak jakbyś rozmawiał z koleżanką, która prowadzi swój biznes. Używaj "ty" i "twój", mów wprost i zrozumiale, bez korporacyjnego języka.
+
+Wyniki kampanii:
 - Okres: ${data.period}
 - Budżet: ${data.budget} PLN
 - Wyświetlenia: ${data.impressions}
-- Zasięg: ${data.reach}
+- Zasięg: ${data.reach} osób
 - Kliknięcia: ${data.clicks}
 - CTR: ${data.ctr}%
 - Konwersje: ${data.conversions}
-- Koszt/konwersja: ${data.costPerConversion} PLN
-- Rezerwacje: ${data.bookings}
+- Koszt na konwersję: ${data.costPerConversion} PLN
+- Rezerwacje: ${data.bookings} wizyt
 
-Zwróć TYLKO listę rekomendacji, każda w nowej linii, bez numeracji, bez dodatkowego tekstu.`;
+Napisz rekomendacje w stylu: "Zwiększ budżet w weekendy o 25% - wtedy masz najlepsze rezultaty i najniższy koszt klienta" zamiast "Zalecamy optymalizację alokacji budżetu w okresach wysokiej konwersji".
+
+Każda rekomendacja to 1-2 zdania, konkretna liczba lub akcja, ludzki ton. Bez numeracji, każda w nowej linii.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -47,7 +49,7 @@ Zwróć TYLKO listę rekomendacji, każda w nowej linii, bez numeracji, bez doda
         messages: [
           {
             role: "system",
-            content: "Jesteś ekspertem od Facebook Ads dla salonów beauty. Tworzysz konkretne, praktyczne rekomendacje marketingowe."
+            content: "Jesteś doświadczonym specjalistą od marketingu dla salonów beauty. Piszesz w ludzki, ciepły i bezpośredni sposób - jak przyjaciel udzielający rady, nie jak korporacyjny konsultant. Używasz 'ty' i mówisz konkretnie, z liczbami i faktami."
           },
           {
             role: "user",
