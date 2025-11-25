@@ -12,12 +12,16 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 const reportSchema = z.object({
-  title: z.string().min(1, "Tytuł jest wymagany").max(100),
+  clientName: z.string().min(1, "Nazwa klienta wymagana").max(100),
+  period: z.string().min(1, "Pole wymagane"),
+  budget: z.string().min(1, "Pole wymagane"),
   impressions: z.string().min(1, "Pole wymagane"),
   reach: z.string().min(1, "Pole wymagane"),
   clicks: z.string().min(1, "Pole wymagane"),
-  engagement: z.string().min(1, "Pole wymagane"),
+  ctr: z.string().min(1, "Pole wymagane"),
   conversions: z.string().min(1, "Pole wymagane"),
+  costPerConversion: z.string().min(1, "Pole wymagane"),
+  bookings: z.string().min(1, "Pole wymagane"),
 });
 
 type ReportFormData = z.infer<typeof reportSchema>;
@@ -87,37 +91,71 @@ const ReportGenerator = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4">
-            Generator Raportów Analytics
+            Generator Raportów Facebook Ads
           </h1>
           <p className="text-slate-400 text-lg">
-            Wprowadź dane aby wygenerować profesjonalny raport PDF
+            Profesjonalne raporty dla salonów beauty - Aurine Agency
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           <Card className="p-8 bg-slate-900/50 border-slate-800">
             <h2 className="text-2xl font-bold text-white mb-6">
-              Dane raportu
+              Dane kampanii Facebook Ads
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <Label htmlFor="title" className="text-white">
-                  Tytuł raportu
+                <Label htmlFor="clientName" className="text-white">
+                  Nazwa salonu
                 </Label>
                 <Input
-                  id="title"
-                  {...register("title")}
-                  placeholder="np. Raport Q1 2024"
+                  id="clientName"
+                  {...register("clientName")}
+                  placeholder="np. Beauty Studio Warszawa"
                   className="bg-slate-950 border-slate-700 text-white"
                 />
-                {errors.title && (
+                {errors.clientName && (
                   <p className="text-red-400 text-sm mt-1">
-                    {errors.title.message}
+                    {errors.clientName.message}
                   </p>
                 )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="period" className="text-white">
+                    Okres
+                  </Label>
+                  <Input
+                    id="period"
+                    {...register("period")}
+                    placeholder="Styczeń 2024"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.period && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.period.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="budget" className="text-white">
+                    Budżet (PLN)
+                  </Label>
+                  <Input
+                    id="budget"
+                    {...register("budget")}
+                    placeholder="5,000"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.budget && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.budget.message}
+                    </p>
+                  )}
+                </div>
+
                 <div>
                   <Label htmlFor="impressions" className="text-white">
                     Wyświetlenia
@@ -125,7 +163,7 @@ const ReportGenerator = () => {
                   <Input
                     id="impressions"
                     {...register("impressions")}
-                    placeholder="1,500,000"
+                    placeholder="150,000"
                     className="bg-slate-950 border-slate-700 text-white"
                   />
                   {errors.impressions && (
@@ -142,7 +180,7 @@ const ReportGenerator = () => {
                   <Input
                     id="reach"
                     {...register("reach")}
-                    placeholder="1,610,000"
+                    placeholder="85,000"
                     className="bg-slate-950 border-slate-700 text-white"
                   />
                   {errors.reach && (
@@ -159,7 +197,7 @@ const ReportGenerator = () => {
                   <Input
                     id="clicks"
                     {...register("clicks")}
-                    placeholder="25,000"
+                    placeholder="3,500"
                     className="bg-slate-950 border-slate-700 text-white"
                   />
                   {errors.clicks && (
@@ -170,35 +208,69 @@ const ReportGenerator = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="engagement" className="text-white">
-                    Zaangażowanie (%)
+                  <Label htmlFor="ctr" className="text-white">
+                    CTR (%)
                   </Label>
                   <Input
-                    id="engagement"
-                    {...register("engagement")}
-                    placeholder="2.5"
+                    id="ctr"
+                    {...register("ctr")}
+                    placeholder="2.33"
                     className="bg-slate-950 border-slate-700 text-white"
                   />
-                  {errors.engagement && (
+                  {errors.ctr && (
                     <p className="text-red-400 text-sm mt-1">
-                      {errors.engagement.message}
+                      {errors.ctr.message}
                     </p>
                   )}
                 </div>
 
-                <div className="col-span-2">
+                <div>
                   <Label htmlFor="conversions" className="text-white">
                     Konwersje
                   </Label>
                   <Input
                     id="conversions"
                     {...register("conversions")}
-                    placeholder="4,110"
+                    placeholder="245"
                     className="bg-slate-950 border-slate-700 text-white"
                   />
                   {errors.conversions && (
                     <p className="text-red-400 text-sm mt-1">
                       {errors.conversions.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="costPerConversion" className="text-white">
+                    Koszt / konwersja (PLN)
+                  </Label>
+                  <Input
+                    id="costPerConversion"
+                    {...register("costPerConversion")}
+                    placeholder="20.41"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.costPerConversion && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.costPerConversion.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="col-span-2">
+                  <Label htmlFor="bookings" className="text-white">
+                    Rezerwacje wizyt
+                  </Label>
+                  <Input
+                    id="bookings"
+                    {...register("bookings")}
+                    placeholder="178"
+                    className="bg-slate-950 border-slate-700 text-white"
+                  />
+                  {errors.bookings && (
+                    <p className="text-red-400 text-sm mt-1">
+                      {errors.bookings.message}
                     </p>
                   )}
                 </div>
@@ -208,7 +280,7 @@ const ReportGenerator = () => {
                 type="submit"
                 className="w-full bg-pink-600 hover:bg-pink-700 text-white"
               >
-                Generuj podgląd
+                Generuj podgląd raportu
               </Button>
             </form>
           </Card>
