@@ -173,7 +173,7 @@ const ReportGenerator = () => {
                   Podgląd - tryb pełnoekranowy (poziomy)
                 </h2>
                 <p className="text-slate-400 text-sm">
-                  Widok poziomy dopasowany do ekranu komputera. Kliknij "Powrót do edycji", aby wrócić do formularza.
+                  Widok poziomy dopasowany do szerokości ekranu komputera. Kliknij "Powrót do edycji", aby wrócić do formularza.
                 </p>
               </div>
               <div className="flex gap-3 flex-wrap">
@@ -202,9 +202,9 @@ const ReportGenerator = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 flex justify-center items-center">
-              <div className="w-full max-w-5xl">
-                <ReportPreview data={reportData} isLandscape />
+            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 h-[calc(100vh-220px)] overflow-auto flex justify-center">
+              <div className="w-[820px]">
+                <ReportPreview data={reportData} />
               </div>
             </div>
           </div>
