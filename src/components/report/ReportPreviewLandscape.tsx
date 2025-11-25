@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { Facebook, TrendingUp, Target, CheckCircle2, Lightbulb } from "lucide-react";
+import { TrendingUp, Target, CheckCircle2, Sparkles } from "lucide-react";
 import aurinelogo from "@/assets/aurine-report-logo.png";
 
 interface ReportData {
@@ -26,6 +26,10 @@ interface ReportData {
   conversions?: string;
   costPerConversion?: string;
   bookings?: string;
+  engagementRate?: string;
+  weeklyReachData?: string;
+  weeklyClicksData?: string;
+  dailyBookingsData?: string;
 }
 
 interface ReportPreviewLandscapeProps {
@@ -33,356 +37,345 @@ interface ReportPreviewLandscapeProps {
 }
 
 export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) => {
-  const conversionData = [
-    { name: "Rezerwacje", value: 72 },
-    { name: "Pozostałe", value: 28 },
-  ];
+  // Calculate chart data from user inputs
+  const hasEngagementData = data.engagementRate && parseFloat(data.engagementRate) > 0;
+  const engagementValue = hasEngagementData ? parseFloat(data.engagementRate || "0") : 0;
+  const engagementData = hasEngagementData
+    ? [
+        { name: "Zaangażowani", value: engagementValue },
+        { name: "Pozostali", value: 100 - engagementValue },
+      ]
+    : null;
 
-  const engagementData = [
-    { name: "Zaangażowani", value: 65 },
-    { name: "Pozostali", value: 35 },
-  ];
+  const hasConversionData = data.bookings && data.conversions;
+  const bookingsNum = hasConversionData ? parseFloat(data.bookings || "0") : 0;
+  const conversionsNum = hasConversionData ? parseFloat(data.conversions || "0") : 0;
+  const conversionData = hasConversionData && conversionsNum > 0
+    ? [
+        { name: "Rezerwacje", value: (bookingsNum / conversionsNum) * 100 },
+        { name: "Pozostałe", value: ((conversionsNum - bookingsNum) / conversionsNum) * 100 },
+      ]
+    : null;
 
-  const weeklyData = [
-    { week: "T1", reach: 15000, clicks: 650 },
-    { week: "T2", reach: 19000, clicks: 820 },
-    { week: "T3", reach: 25000, clicks: 1100 },
-    { week: "T4", reach: 26000, clicks: 930 },
-  ];
+  const hasWeeklyData = data.weeklyReachData && data.weeklyClicksData;
+  const weeklyData = hasWeeklyData
+    ? data.weeklyReachData!.split(",").map((reach, i) => ({
+        week: `T${i + 1}`,
+        reach: parseFloat(reach.trim()),
+        clicks: parseFloat(data.weeklyClicksData!.split(",")[i]?.trim() || "0"),
+      }))
+    : null;
 
-  const dailyBookings = [
-    { day: "Pn", value: 22 },
-    { day: "Wt", value: 28 },
-    { day: "Śr", value: 32 },
-    { day: "Cz", value: 35 },
-    { day: "Pt", value: 38 },
-    { day: "Sb", value: 42 },
-    { day: "Nd", value: 25 },
-  ];
+  const hasDailyBookings = data.dailyBookingsData;
+  const dailyBookings = hasDailyBookings
+    ? data.dailyBookingsData!.split(",").map((val, i) => ({
+        day: ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"][i] || `D${i + 1}`,
+        value: parseFloat(val.trim()),
+      }))
+    : null;
 
   return (
     <div
       id="report-preview-landscape"
-      className="w-[1600px] h-[900px] bg-[hsl(var(--brand-darker))] text-white rounded-3xl shadow-2xl overflow-hidden"
+      className="w-[1600px] h-[900px] bg-black text-white rounded-3xl shadow-2xl overflow-hidden"
     >
       <div className="flex h-full">
         {/* Sidebar */}
-        <aside className="w-64 bg-slate-950/80 border-r border-slate-800 flex flex-col justify-between p-6">
-          <div className="space-y-6">
+        <aside className="w-72 bg-gradient-to-b from-zinc-950 to-black border-r border-zinc-800/50 flex flex-col justify-between p-8">
+          <div className="space-y-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 p-2 flex items-center justify-center shadow-lg shadow-pink-500/30">
                 <img
                   src={aurinelogo}
-                  alt="Aurine logo"
-                  className="w-8 h-8 object-contain"
+                  alt="Aurine"
+                  className="w-full h-full object-contain"
                 />
               </div>
-              <div className="space-y-1">
-                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-                  Aurine
+              <div className="space-y-0.5">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-light">
+                  Aurine Agency
                 </p>
-                <p className="text-sm font-semibold text-white">
-                  Raport kampanii
+                <p className="text-base font-semibold text-white">
+                  Raport Kampanii
                 </p>
               </div>
             </div>
 
-            <div className="space-y-2 text-xs text-slate-300">
-              <p className="font-semibold text-slate-100">
-                {data.clientName || "Salon beauty"}
-              </p>
-              <p className="text-slate-400">{data.city || "Miasto nie podane"}</p>
-              <p className="text-slate-500">
-                Okres:{" "}
-                <span className="text-slate-300">{data.period || "—"}</span>
-              </p>
-              <p className="text-slate-500">
-                Budżet:{" "}
-                <span className="text-pink-400 font-semibold">
-                  {data.budget ? `${data.budget} PLN` : "—"}
+            <div className="space-y-3 text-sm">
+              <div className="pb-3 border-b border-zinc-800/50">
+                <p className="font-semibold text-base text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-300">
+                  {data.clientName || "Salon Beauty"}
+                </p>
+                <p className="text-zinc-400 text-xs mt-1">{data.city || "Lokalizacja"}</p>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500">Okres</span>
+                  <span className="text-zinc-300 font-medium">{data.period || "—"}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500">Budżet</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-400 font-semibold">
+                    {data.budget ? `${data.budget} PLN` : "—"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/10 to-rose-500/10 border border-pink-500/20">
+                <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+                <span className="text-[10px] uppercase tracking-widest text-pink-300">
+                  Facebook Ads
                 </span>
-              </p>
-            </div>
-
-            <nav className="pt-4 space-y-2 text-xs text-slate-400">
-              <p className="uppercase tracking-[0.25em] text-slate-500 mb-2">
-                Sekcje
-              </p>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-pink-400 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
-                  <span>Podsumowanie</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-                  <span>Zaangażowanie</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-                  <span>Rezerwacje</span>
-                </div>
               </div>
-            </nav>
+            </div>
           </div>
 
-          <div className="pt-4 text-[10px] text-slate-500">
-            <p>Facebook Ads dla salonów beauty</p>
-            <p className="text-slate-600">aurine-agency.com</p>
+          <div className="pt-4 text-[10px] text-zinc-600 space-y-0.5">
+            <p className="text-zinc-500">Premium Analytics Report</p>
+            <p className="text-zinc-700">aurine-agency.com</p>
           </div>
         </aside>
 
-        {/* Main analytics area */}
-        <main className="flex-1 h-full bg-gradient-to-b from-slate-900/80 to-slate-950/90 p-6 flex flex-col gap-4">
-          {/* Top header */}
-          <header className="flex items-center justify-between gap-6">
+        {/* Main content */}
+        <main className="flex-1 h-full bg-black p-8 flex flex-col gap-6 overflow-hidden">
+          {/* Header */}
+          <header className="flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-              <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                Podsumowanie wyników kampanii Facebook Ads przygotowane dla
-                salonu beauty. Kluczowe wskaźniki skuteczności i rezerwacji.
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+                Analytics Dashboard
+              </h1>
+              <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
+                Kompleksowa analiza wyników kampanii reklamowej dla salonu beauty — kluczowe metryki efektywności i konwersji.
               </p>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <span className="text-xs uppercase tracking-[0.25em] text-slate-500">
-                KPI RAPORTU
-              </span>
-              <div className="flex items-center gap-2 rounded-full bg-slate-900/80 border border-slate-700 px-4 py-2">
-                <TrendingUp className="w-4 h-4 text-pink-400" />
-                <div className="text-right">
-                  <p className="text-[11px] text-slate-400">Rezerwacje</p>
-                  <p className="text-lg font-semibold text-pink-400">
-                    {data.bookings || "—"}
-                  </p>
-                </div>
+            <div className="text-right">
+              <div className="inline-flex flex-col items-end gap-1 px-5 py-3 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-700 shadow-xl shadow-pink-500/25">
+                <span className="text-[10px] uppercase tracking-[0.25em] text-pink-100 font-light">
+                  Wizyty
+                </span>
+                <p className="text-3xl font-bold text-white">
+                  {data.bookings || "—"}
+                </p>
               </div>
             </div>
           </header>
 
-          {/* KPI row */}
+          {/* KPI Cards */}
           <section className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span>Wyświetlenia</span>
+            <div className="bg-zinc-950 rounded-2xl border border-zinc-800/50 p-5 backdrop-blur">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-zinc-500 uppercase tracking-wider">Wyświetlenia</span>
                 <TrendingUp className="w-4 h-4 text-pink-400" />
               </div>
-              <p className="text-2xl font-semibold">{data.impressions || "—"}</p>
-              <p className="text-[11px] text-slate-500">Łączna liczba odsłon</p>
+              <p className="text-2xl font-bold text-white mb-1">{data.impressions || "—"}</p>
+              <p className="text-[10px] text-zinc-600">Łączna liczba wyświetleń reklam</p>
             </div>
 
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span>Zasięg</span>
+            <div className="bg-zinc-950 rounded-2xl border border-zinc-800/50 p-5 backdrop-blur">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-zinc-500 uppercase tracking-wider">Zasięg</span>
                 <Target className="w-4 h-4 text-blue-400" />
               </div>
-              <p className="text-2xl font-semibold">{data.reach || "—"}</p>
-              <p className="text-[11px] text-slate-500">Unikalne osoby, które zobaczyły reklamy</p>
+              <p className="text-2xl font-bold text-white mb-1">{data.reach || "—"}</p>
+              <p className="text-[10px] text-zinc-600">Unikalne osoby objęte kampanią</p>
             </div>
 
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span>Kliknięcia</span>
-                <Facebook className="w-4 h-4 text-blue-400" />
+            <div className="bg-zinc-950 rounded-2xl border border-zinc-800/50 p-5 backdrop-blur">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-zinc-500 uppercase tracking-wider">Kliknięcia</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               </div>
-              <p className="text-2xl font-semibold">{data.clicks || "—"}</p>
-              <p className="text-[11px] text-slate-500">Kliknięcia w reklamy kampanii</p>
+              <p className="text-2xl font-bold text-white mb-1">{data.clicks || "—"}</p>
+              <p className="text-[10px] text-zinc-600">Interakcje z reklamami</p>
             </div>
 
-            <div className="bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl border border-pink-500/70 px-4 py-3 flex flex-col justify-between shadow-lg shadow-pink-500/30">
-              <div className="flex items-center justify-between text-xs text-pink-50/80 mb-1">
-                <span>Rezerwacje</span>
-                <CheckCircle2 className="w-4 h-4" />
+            <div className="bg-gradient-to-br from-pink-600/20 to-rose-600/20 rounded-2xl border border-pink-500/30 p-5 backdrop-blur shadow-lg shadow-pink-500/10">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-pink-300 uppercase tracking-wider">CTR</span>
+                <TrendingUp className="w-4 h-4 text-pink-300" />
               </div>
-              <p className="text-2xl font-semibold text-white">{data.bookings || "—"}</p>
-              <p className="text-[11px] text-pink-50/80">Umówione wizyty z kampanii</p>
+              <p className="text-2xl font-bold text-white mb-1">{data.ctr ? `${data.ctr}%` : "—"}</p>
+              <p className="text-[10px] text-pink-200/60">Współczynnik klikalności</p>
             </div>
           </section>
 
-          {/* Secondary KPI row */}
+          {/* Secondary metrics */}
           <section className="grid grid-cols-3 gap-4">
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3">
-              <p className="text-xs text-slate-400 mb-1">CTR</p>
-              <p className="text-xl font-semibold">{data.ctr ? `${data.ctr}%` : "—"}</p>
-              <p className="text-[11px] text-slate-500">Średni współczynnik klikalności</p>
+            <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Konwersje</p>
+              <p className="text-xl font-bold text-white">{data.conversions || "—"}</p>
             </div>
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3">
-              <p className="text-xs text-slate-400 mb-1">Konwersje</p>
-              <p className="text-xl font-semibold">{data.conversions || "—"}</p>
-              <p className="text-[11px] text-slate-500">Wszystkie działania uznane za sukces</p>
+            <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Koszt / konwersja</p>
+              <p className="text-xl font-bold text-pink-400">{data.costPerConversion ? `${data.costPerConversion} PLN` : "—"}</p>
             </div>
-            <div className="bg-slate-900/80 rounded-2xl border border-slate-800 px-4 py-3">
-              <p className="text-xs text-slate-400 mb-1">Koszt / konwersja</p>
-              <p className="text-xl font-semibold">{data.costPerConversion || "—"}</p>
-              <p className="text-[11px] text-slate-500">Średni koszt pozyskania jednej rezerwacji</p>
+            <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Rezerwacje</p>
+              <p className="text-xl font-bold text-white">{data.bookings || "—"}</p>
             </div>
           </section>
 
-          {/* Charts & trends area */}
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
-            {/* Left column: pies */}
-            <div className="flex flex-col gap-4 min-h-0">
-              {/* Conversion pie */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 flex flex-col flex-1 min-h-0">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-pink-500 w-7 h-7 rounded-lg flex items-center justify-center">
-                      <CheckCircle2 className="w-4 h-4 text-white" />
+          {/* Charts - only show if data exists */}
+          {(conversionData || engagementData || weeklyData || dailyBookings) && (
+            <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+              {/* Left column */}
+              <div className="flex flex-col gap-4 min-h-0">
+                {conversionData && (
+                  <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-4 flex flex-col flex-1 min-h-0 backdrop-blur">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-pink-500/20 w-8 h-8 rounded-xl flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-pink-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-white">Efektywność rezerwacji</h4>
+                        <p className="text-[10px] text-zinc-500">
+                          {bookingsNum} z {conversionsNum} konwersji
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold">Efektywność rezerwacji</h4>
-                      <p className="text-[11px] text-slate-400">
-                        Udział rezerwacji w całkowitej liczbie konwersji
-                      </p>
+                    <div className="flex-1 min-h-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={conversionData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={55}
+                            outerRadius={80}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            <Cell fill="#ec4899" />
+                            <Cell fill="#27272a" />
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={conversionData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={75}
-                        paddingAngle={4}
-                        dataKey="value"
-                      >
-                        <Cell fill="#ec4899" />
-                        <Cell fill="#334155" />
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <p className="text-center text-slate-300 text-xs mt-2">
-                  {data.bookings || "—"} z {data.conversions || "—"} wszystkich konwersji
-                </p>
+                )}
+
+                {engagementData && (
+                  <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-4 flex flex-col flex-1 min-h-0 backdrop-blur">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-blue-500/20 w-8 h-8 rounded-xl flex items-center justify-center">
+                        <Target className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-white">Zaangażowanie</h4>
+                        <p className="text-[10px] text-zinc-500">
+                          {engagementValue}% zaangażowanych odbiorców
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={engagementData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={55}
+                            outerRadius={80}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            <Cell fill="#3b82f6" />
+                            <Cell fill="#27272a" />
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Engagement pie */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 flex flex-col flex-1 min-h-0">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-blue-500 w-7 h-7 rounded-lg flex items-center justify-center">
-                      <Target className="w-4 h-4 text-white" />
+              {/* Right column */}
+              <div className="flex flex-col gap-4 min-h-0">
+                {weeklyData && (
+                  <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-4 flex flex-col flex-1 min-h-0 backdrop-blur">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-purple-500/20 w-8 h-8 rounded-xl flex items-center justify-center">
+                        <TrendingUp className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-white">Trend tygodniowy</h4>
+                        <p className="text-[10px] text-zinc-500">Zasięg i kliknięcia</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold">Zaangażowanie odbiorców</h4>
-                      <p className="text-[11px] text-slate-400">
-                        Stosunek osób aktywnych do wszystkich objętych zasięgiem
-                      </p>
+                    <div className="flex-1 min-h-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={weeklyData}>
+                          <XAxis dataKey="week" stroke="#52525b" style={{ fontSize: "10px" }} />
+                          <YAxis stroke="#52525b" style={{ fontSize: "10px" }} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "#000",
+                              border: "1px solid #27272a",
+                              borderRadius: "12px",
+                              fontSize: "11px",
+                            }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="reach"
+                            stroke="#ec4899"
+                            strokeWidth={2.5}
+                            dot={{ fill: "#ec4899", r: 3 }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="clicks"
+                            stroke="#3b82f6"
+                            strokeWidth={2.5}
+                            dot={{ fill: "#3b82f6", r: 3 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={engagementData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={75}
-                        paddingAngle={4}
-                        dataKey="value"
-                      >
-                        <Cell fill="#3b82f6" />
-                        <Cell fill="#334155" />
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
+                )}
 
-            {/* Right column: trends */}
-            <div className="flex flex-col gap-4 min-h-0">
-              {/* Weekly trend line */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 flex flex-col flex-1 min-h-0">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-purple-500 w-7 h-7 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-white" />
+                {dailyBookings && (
+                  <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-4 flex flex-col flex-1 min-h-0 backdrop-blur">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-pink-500/20 w-8 h-8 rounded-xl flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-pink-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-white">Rezerwacje dzienne</h4>
+                        <p className="text-[10px] text-zinc-500">Rozkład tygodniowy</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold">Tygodniowy trend kampanii</h4>
-                      <p className="text-[11px] text-slate-400">
-                        Zmiana zasięgu i liczby kliknięć w kolejnych tygodniach
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={weeklyData}>
-                      <XAxis dataKey="week" stroke="#94a3b8" style={{ fontSize: "11px" }} />
-                      <YAxis stroke="#94a3b8" style={{ fontSize: "11px" }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#0f172a",
-                          border: "none",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="reach"
-                        stroke="#ec4899"
-                        strokeWidth={3}
-                        dot={{ fill: "#ec4899", r: 3 }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="clicks"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{ fill: "#3b82f6", r: 3 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Daily bookings bar */}
-              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 flex flex-col flex-1 min-h-0">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-pink-500 w-7 h-7 rounded-lg flex items-center justify-center">
-                      <CheckCircle2 className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold">Rezerwacje wg dni tygodnia</h4>
-                      <p className="text-[11px] text-slate-400">
-                        Rozkład liczby wizyt pozyskanych z kampanii
-                      </p>
+                    <div className="flex-1 min-h-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={dailyBookings}>
+                          <XAxis dataKey="day" stroke="#52525b" style={{ fontSize: "10px" }} />
+                          <YAxis stroke="#52525b" style={{ fontSize: "10px" }} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "#000",
+                              border: "1px solid #27272a",
+                              borderRadius: "12px",
+                              fontSize: "11px",
+                            }}
+                          />
+                          <Bar dataKey="value" fill="#ec4899" radius={[8, 8, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dailyBookings}>
-                      <XAxis dataKey="day" stroke="#94a3b8" style={{ fontSize: "11px" }} />
-                      <YAxis stroke="#94a3b8" style={{ fontSize: "11px" }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#0f172a",
-                          border: "none",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                        }}
-                      />
-                      <Bar dataKey="value" fill="#ec4899" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
 
-          <footer className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
-            <p>Raport wygenerowany automatycznie przez Aurine Agency</p>
+          {/* Footer */}
+          <footer className="pt-3 border-t border-zinc-900 flex items-center justify-between text-[10px] text-zinc-700">
+            <p>© 2024 Aurine Agency · Profesjonalne kampanie dla salonów beauty</p>
             <p>facebook.com/aurine.agency</p>
           </footer>
         </main>
@@ -390,4 +383,3 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
     </div>
   );
 };
-

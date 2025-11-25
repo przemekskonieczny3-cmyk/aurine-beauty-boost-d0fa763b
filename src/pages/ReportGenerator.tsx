@@ -24,6 +24,11 @@ const reportSchema = z.object({
   conversions: z.string().min(1, "Pole wymagane"),
   costPerConversion: z.string().min(1, "Pole wymagane"),
   bookings: z.string().min(1, "Pole wymagane"),
+  // Optional - dane do wykresów
+  engagementRate: z.string().optional(),
+  weeklyReachData: z.string().optional(), // format: "15000,19000,25000,26000"
+  weeklyClicksData: z.string().optional(), // format: "650,820,1100,930"
+  dailyBookingsData: z.string().optional(), // format: "22,28,32,35,38,42,25"
 });
 
 type ReportFormData = z.infer<typeof reportSchema>;
@@ -408,6 +413,62 @@ const ReportGenerator = () => {
                         {errors.bookings.message}
                       </p>
                     )}
+                  </div>
+                </div>
+
+                {/* Opcjonalne dane do wykresów */}
+                <div className="pt-4 border-t border-slate-700">
+                  <h3 className="text-white font-semibold mb-4 text-sm">
+                    Dane opcjonalne (wykresy)
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="engagementRate" className="text-slate-300 text-sm">
+                        Współczynnik zaangażowania (%)
+                      </Label>
+                      <Input
+                        id="engagementRate"
+                        {...register("engagementRate")}
+                        placeholder="np. 65"
+                        className="bg-slate-950 border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="weeklyReachData" className="text-slate-300 text-sm">
+                        Zasięg tygodniowy (4 wartości, oddziel przecinkami)
+                      </Label>
+                      <Input
+                        id="weeklyReachData"
+                        {...register("weeklyReachData")}
+                        placeholder="np. 15000,19000,25000,26000"
+                        className="bg-slate-950 border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="weeklyClicksData" className="text-slate-300 text-sm">
+                        Kliknięcia tygodniowe (4 wartości, oddziel przecinkami)
+                      </Label>
+                      <Input
+                        id="weeklyClicksData"
+                        {...register("weeklyClicksData")}
+                        placeholder="np. 650,820,1100,930"
+                        className="bg-slate-950 border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="dailyBookingsData" className="text-slate-300 text-sm">
+                        Rezerwacje dzienne (7 dni, oddziel przecinkami)
+                      </Label>
+                      <Input
+                        id="dailyBookingsData"
+                        {...register("dailyBookingsData")}
+                        placeholder="np. 22,28,32,35,38,42,25"
+                        className="bg-slate-950 border-slate-700 text-white"
+                      />
+                    </div>
                   </div>
                 </div>
 
