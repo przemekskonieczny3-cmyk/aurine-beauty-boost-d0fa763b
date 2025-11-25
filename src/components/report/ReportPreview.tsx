@@ -67,7 +67,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-[hsl(var(--brand-darker))] p-12 min-h-[1400px] max-w-[820px] mx-auto"
+      className="bg-[hsl(var(--brand-darker))] p-12 min-h-[1400px] w-full"
     >
       {/* Header with Logo */}
       <div className="flex justify-between items-center mb-12 pb-8 border-b-2 border-slate-800">

@@ -54,10 +54,19 @@ const ReportGenerator = () => {
 
     setIsGenerating(true);
     try {
+      // Temporarily set fixed width for PDF generation
+      const originalWidth = element.style.width;
+      element.style.width = "210mm"; // A4 width
+      
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 3,
         backgroundColor: "#050509",
+        width: 794, // A4 width in pixels at 96 DPI
+        windowWidth: 794,
       });
+
+      // Restore original width
+      element.style.width = originalWidth;
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -71,13 +80,23 @@ const ReportGenerator = () => {
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
 
-      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-      const displayWidth = imgWidth * ratio;
-      const displayHeight = imgHeight * ratio;
-      const marginX = (pageWidth - displayWidth) / 2;
-      const marginY = (pageHeight - displayHeight) / 2;
+      const ratio = pageWidth / imgWidth;
+      const pdfHeight = imgHeight * ratio;
 
-      pdf.addImage(imgData, "PNG", marginX, marginY, displayWidth, displayHeight);
+      // Add multiple pages if content is longer than one page
+      let heightLeft = pdfHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight);
+        heightLeft -= pageHeight;
+      }
+
       pdf.save(`raport-${Date.now()}.pdf`);
 
       toast({
