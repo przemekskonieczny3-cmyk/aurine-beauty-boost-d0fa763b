@@ -11,6 +11,7 @@ import { ReportPreview } from "@/components/report/ReportPreview";
 import { ReportPreviewLandscape } from "@/components/report/ReportPreviewLandscape";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { supabase } from "@/integrations/supabase/client";
 
 const reportSchema = z.object({
   clientName: z.string().min(1, "Nazwa klienta wymagana").max(100),
@@ -49,7 +50,33 @@ const ReportGenerator = () => {
     resolver: zodResolver(reportSchema),
   });
 
-  const onSubmit = (data: ReportFormData) => {
+  const onSubmit = async (data: ReportFormData) => {
+    // Jeśli nie ma rekomendacji, generuj je przez AI
+    if (!data.recommendations || data.recommendations.trim() === "") {
+      setIsGenerating(true);
+      try {
+        const { data: functionData, error } = await supabase.functions.invoke(
+          "generate-recommendations",
+          { body: { data } }
+        );
+
+        if (error) throw error;
+
+        if (functionData?.recommendations) {
+          data.recommendations = functionData.recommendations;
+        }
+      } catch (error) {
+        console.error("Error generating recommendations:", error);
+        toast({
+          title: "Uwaga",
+          description: "Nie udało się wygenerować rekomendacji AI, używam domyślnych",
+          variant: "destructive",
+        });
+      } finally {
+        setIsGenerating(false);
+      }
+    }
+
     setReportData(data);
     toast({
       title: "Podgląd gotowy!",
@@ -73,10 +100,12 @@ const ReportGenerator = () => {
       element.style.maxWidth = "none";
 
       const canvas = await html2canvas(element, {
-        scale: 3,
+        scale: 2, // Zmniejszono z 3 na 2 dla mniejszego rozmiaru
         backgroundColor: "#050509",
         width: 794, // szerokość A4 w px przy 96 DPI
         windowWidth: 794,
+        useCORS: true,
+        allowTaint: true,
       });
 
       // Przywrócenie oryginalnych stylów
@@ -139,11 +168,13 @@ const ReportGenerator = () => {
       const rect = element.getBoundingClientRect();
       const canvas = await html2canvas(element, {
         scale: 2,
-        backgroundColor: "#050509",
+        backgroundColor: "#000000",
         width: rect.width,
         height: rect.height,
         windowWidth: rect.width,
         windowHeight: rect.height,
+        useCORS: true,
+        allowTaint: true,
       });
 
       const link = document.createElement("a");
@@ -471,15 +502,15 @@ const ReportGenerator = () => {
                       />
                     </div>
 
-                    <div>
+                     <div>
                       <Label htmlFor="recommendations" className="text-slate-300 text-sm">
-                        Rekomendacje marketingowe (każda w nowej linii)
+                        Rekomendacje marketingowe (opcjonalne - zostaną wygenerowane przez AI jeśli puste)
                       </Label>
                       <textarea
                         id="recommendations"
                         {...register("recommendations")}
                         rows={5}
-                        placeholder="np.&#10;Zwiększ budżet w weekendy&#10;Uruchom kampanie retargetingowe&#10;Testuj nowe kreacje"
+                        placeholder="Zostaw puste, aby AI wygenerowało rekomendacje automatycznie na podstawie danych kampanii"
                         className="w-full px-3 py-2 bg-slate-950 border border-slate-700 text-white rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-pink-500"
                       />
                     </div>

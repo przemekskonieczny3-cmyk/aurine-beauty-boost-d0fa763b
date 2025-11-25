@@ -1,18 +1,6 @@
-import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
 import { TrendingUp, Target, CheckCircle2, Sparkles } from "lucide-react";
 import aurinelogo from "@/assets/aurine-report-logo.png";
+import { SimplePieChart, SimpleBarChart, SimpleLineChart } from "./SimpleCharts";
 
 interface ReportData {
   clientName?: string;
@@ -41,48 +29,44 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
   // Calculate chart data - zawsze pokazuj wykresy, użyj przykładowych danych jeśli brak
   const engagementValue = data.engagementRate ? parseFloat(data.engagementRate) : 23;
   const engagementData = [
-    { name: "Zaangażowani", value: engagementValue },
-    { name: "Pozostali", value: 100 - engagementValue },
+    { name: "Zaangażowani", value: engagementValue, color: "#3b82f6" },
+    { name: "Pozostali", value: 100 - engagementValue, color: "#27272a" },
   ];
 
-  const bookingsNum = data.bookings ? parseFloat(data.bookings) : 33;
-  const conversionsNum = data.conversions ? parseFloat(data.conversions) : 50;
-  const conversionData = conversionsNum > 0
-    ? [
-        { name: "Rezerwacje", value: (bookingsNum / conversionsNum) * 100 },
-        { name: "Pozostałe", value: ((conversionsNum - bookingsNum) / conversionsNum) * 100 },
-      ]
-    : [
-        { name: "Rezerwacje", value: 66 },
-        { name: "Pozostałe", value: 34 },
-      ];
+  const bookingsNum = data.bookings ? parseFloat(data.bookings.replace(/,/g, "")) : 33;
+  const conversionsNum = data.conversions ? parseFloat(data.conversions.replace(/,/g, "")) : 50;
+  const conversionPercentage = conversionsNum > 0 ? (bookingsNum / conversionsNum) * 100 : 66;
+  const conversionData = [
+    { name: "Rezerwacje", value: conversionPercentage, color: "#ec4899" },
+    { name: "Pozostałe", value: 100 - conversionPercentage, color: "#27272a" },
+  ];
 
   const weeklyData = data.weeklyReachData && data.weeklyClicksData
     ? data.weeklyReachData.split(",").map((reach, i) => ({
-        week: `T${i + 1}`,
-        reach: parseFloat(reach.trim()),
-        clicks: parseFloat(data.weeklyClicksData!.split(",")[i]?.trim() || "0"),
+        label: `T${i + 1}`,
+        value1: parseFloat(reach.trim()),
+        value2: parseFloat(data.weeklyClicksData!.split(",")[i]?.trim() || "0"),
       }))
     : [
-        { week: "T1", reach: 15000, clicks: 650 },
-        { week: "T2", reach: 19000, clicks: 820 },
-        { week: "T3", reach: 25000, clicks: 1100 },
-        { week: "T4", reach: 26000, clicks: 930 },
+        { label: "T1", value1: 15000, value2: 650 },
+        { label: "T2", value1: 19000, value2: 820 },
+        { label: "T3", value1: 25000, value2: 1100 },
+        { label: "T4", value1: 26000, value2: 930 },
       ];
 
   const dailyBookings = data.dailyBookingsData
     ? data.dailyBookingsData.split(",").map((val, i) => ({
-        day: ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"][i] || `D${i + 1}`,
+        label: ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"][i] || `D${i + 1}`,
         value: parseFloat(val.trim()),
       }))
     : [
-        { day: "Pn", value: 3 },
-        { day: "Wt", value: 5 },
-        { day: "Śr", value: 7 },
-        { day: "Cz", value: 6 },
-        { day: "Pt", value: 8 },
-        { day: "Sb", value: 2 },
-        { day: "Nd", value: 2 },
+        { label: "Pn", value: 3 },
+        { label: "Wt", value: 5 },
+        { label: "Śr", value: 7 },
+        { label: "Cz", value: 6 },
+        { label: "Pt", value: 8 },
+        { label: "Sb", value: 2 },
+        { label: "Nd", value: 2 },
       ];
 
   return (
@@ -246,24 +230,8 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                       </p>
                     </div>
                   </div>
-                  <div className="flex-1 min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={conversionData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={55}
-                          outerRadius={80}
-                          paddingAngle={3}
-                          dataKey="value"
-                        >
-                          <Cell fill="#ec4899" />
-                          <Cell fill="#27272a" />
-                        </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: "#18181b", border: "1px solid #3f3f46", borderRadius: "8px" }} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                  <div className="flex-1 min-h-0 flex items-center justify-center">
+                    <SimplePieChart data={conversionData} size={160} />
                   </div>
                 </div>
 
@@ -279,24 +247,8 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                       </p>
                     </div>
                   </div>
-                  <div className="flex-1 min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={engagementData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={55}
-                          outerRadius={80}
-                          paddingAngle={3}
-                          dataKey="value"
-                        >
-                          <Cell fill="#3b82f6" />
-                          <Cell fill="#27272a" />
-                        </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: "#18181b", border: "1px solid #3f3f46", borderRadius: "8px" }} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                  <div className="flex-1 min-h-0 flex items-center justify-center">
+                    <SimplePieChart data={engagementData} size={160} />
                   </div>
                 </div>
               </div>
@@ -313,35 +265,14 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                       <p className="text-[10px] text-purple-300">Zasięg i kliknięcia</p>
                     </div>
                   </div>
-                  <div className="flex-1 min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={weeklyData}>
-                        <XAxis dataKey="week" stroke="#a855f7" style={{ fontSize: "10px" }} />
-                        <YAxis stroke="#a855f7" style={{ fontSize: "10px" }} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#18181b",
-                            border: "1px solid #3f3f46",
-                            borderRadius: "12px",
-                            fontSize: "11px",
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="reach"
-                          stroke="#ec4899"
-                          strokeWidth={3}
-                          dot={{ fill: "#ec4899", r: 4 }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="clicks"
-                          stroke="#3b82f6"
-                          strokeWidth={3}
-                          dot={{ fill: "#3b82f6", r: 4 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                  <div className="flex-1 min-h-0 flex items-center justify-center">
+                    <SimpleLineChart 
+                      data={weeklyData} 
+                      width={350}
+                      height={150}
+                      color1="#ec4899"
+                      color2="#3b82f6"
+                    />
                   </div>
                 </div>
 
@@ -355,22 +286,13 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                       <p className="text-[10px] text-rose-300">Rozkład tygodniowy</p>
                     </div>
                   </div>
-                  <div className="flex-1 min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={dailyBookings}>
-                        <XAxis dataKey="day" stroke="#fb7185" style={{ fontSize: "10px" }} />
-                        <YAxis stroke="#fb7185" style={{ fontSize: "10px" }} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#18181b",
-                            border: "1px solid #3f3f46",
-                            borderRadius: "12px",
-                            fontSize: "11px",
-                          }}
-                        />
-                        <Bar dataKey="value" fill="#ec4899" radius={[8, 8, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
+                  <div className="flex-1 min-h-0 flex items-center justify-center">
+                    <SimpleBarChart 
+                      data={dailyBookings} 
+                      width={350}
+                      height={150}
+                      color="#ec4899"
+                    />
                   </div>
                 </div>
               </div>
