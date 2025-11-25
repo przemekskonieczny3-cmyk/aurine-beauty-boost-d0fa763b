@@ -30,6 +30,7 @@ interface ReportData {
   weeklyReachData?: string;
   weeklyClicksData?: string;
   dailyBookingsData?: string;
+  recommendations?: string;
 }
 
 interface ReportPreviewLandscapeProps {
@@ -75,13 +76,13 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
         value: parseFloat(val.trim()),
       }))
     : [
-        { day: "Pn", value: 1200 },
-        { day: "Wt", value: 800 },
-        { day: "Śr", value: 950 },
-        { day: "Cz", value: 1100 },
-        { day: "Pt", value: 1350 },
-        { day: "Sb", value: 200 },
-        { day: "Nd", value: 150 },
+        { day: "Pn", value: 3 },
+        { day: "Wt", value: 5 },
+        { day: "Śr", value: 7 },
+        { day: "Cz", value: 6 },
+        { day: "Pt", value: 8 },
+        { day: "Sb", value: 2 },
+        { day: "Nd", value: 2 },
       ];
 
   return (
@@ -149,7 +150,7 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 h-full bg-black p-8 flex flex-col gap-6 overflow-hidden">
+        <main className="flex-1 h-full bg-black p-6 flex flex-col gap-4 overflow-hidden">
           {/* Header */}
           <header className="flex items-start justify-between">
             <div>
@@ -227,8 +228,10 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
             </div>
           </section>
 
-          {/* Charts - zawsze pokazuj */}
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+          {/* Charts and recommendations grid */}
+          <div className="grid grid-cols-[1fr,340px] gap-4 flex-1 min-h-0">
+            {/* Charts grid 2x2 */}
+            <div className="grid grid-cols-2 gap-4 min-h-0">
               {/* Left column */}
               <div className="flex flex-col gap-4 min-h-0">
                 <div className="bg-gradient-to-br from-pink-950/20 via-zinc-950/50 to-zinc-950/50 rounded-2xl border border-pink-800/20 p-4 flex flex-col flex-1 min-h-0 backdrop-blur shadow-lg">
@@ -373,8 +376,61 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
               </div>
             </div>
 
+            {/* Recommendations panel */}
+            <div className="bg-gradient-to-br from-emerald-950/30 via-zinc-950/60 to-zinc-950/50 rounded-2xl border border-emerald-800/30 p-5 flex flex-col min-h-0 backdrop-blur shadow-xl">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-white">Rekomendacje</h4>
+                  <p className="text-[10px] text-emerald-300">Dalsze działania</p>
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+                {data.recommendations ? (
+                  data.recommendations.split('\n').filter(line => line.trim()).map((rec, idx) => (
+                    <div key={idx} className="flex gap-3 group">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/20 transition-colors">
+                        <span className="text-[10px] font-bold text-emerald-400">{idx + 1}</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">{rec}</p>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[10px] font-bold text-emerald-400">1</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">Zwiększ budżet na kampanie w godzinach popołudniowych (16-20), kiedy rezerwacje są najwyższe</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[10px] font-bold text-emerald-400">2</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">Uruchom kampanie retargetingowe dla osób, które kliknęły ale nie zarezerwowały wizyty</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[10px] font-bold text-emerald-400">3</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">Przetestuj kreacje z ofertami weekendowymi, aby zwiększyć rezerwacje w soboty i niedziele</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[10px] font-bold text-emerald-400">4</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">Skoncentruj się na targetowaniu lokalnym (5km wokół salonu) dla lepszej jakości ruchu</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Footer */}
-          <footer className="pt-3 border-t border-zinc-900 flex items-center justify-between text-[10px] text-zinc-700">
+          <footer className="pt-2 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
             <p>© 2024 Aurine Agency · Profesjonalne kampanie dla salonów beauty</p>
             <p>facebook.com/aurine.agency</p>
           </footer>

@@ -29,6 +29,7 @@ const reportSchema = z.object({
   weeklyReachData: z.string().optional(), // format: "15000,19000,25000,26000"
   weeklyClicksData: z.string().optional(), // format: "650,820,1100,930"
   dailyBookingsData: z.string().optional(), // format: "22,28,32,35,38,42,25"
+  recommendations: z.string().optional(), // Rekomendacje marketingowe
 });
 
 type ReportFormData = z.infer<typeof reportSchema>;
@@ -467,6 +468,19 @@ const ReportGenerator = () => {
                         {...register("dailyBookingsData")}
                         placeholder="np. 22,28,32,35,38,42,25"
                         className="bg-slate-950 border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="recommendations" className="text-slate-300 text-sm">
+                        Rekomendacje marketingowe (każda w nowej linii)
+                      </Label>
+                      <textarea
+                        id="recommendations"
+                        {...register("recommendations")}
+                        rows={5}
+                        placeholder="np.&#10;Zwiększ budżet w weekendy&#10;Uruchom kampanie retargetingowe&#10;Testuj nowe kreacje"
+                        className="w-full px-3 py-2 bg-slate-950 border border-slate-700 text-white rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-pink-500"
                       />
                     </div>
                   </div>
