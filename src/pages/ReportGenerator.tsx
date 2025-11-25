@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 
 const reportSchema = z.object({
   clientName: z.string().min(1, "Nazwa klienta wymagana").max(100),
+  city: z.string().min(1, "Miasto salonu wymagane").max(100),
   period: z.string().min(1, "Pole wymagane"),
   budget: z.string().min(1, "Pole wymagane"),
   impressions: z.string().min(1, "Pole wymagane"),
@@ -55,7 +56,7 @@ const ReportGenerator = () => {
     try {
       const canvas = await html2canvas(element, {
         scale: 2,
-        backgroundColor: "#0a0a0f",
+        backgroundColor: "#050509",
       });
 
       const imgData = canvas.toDataURL("image/png");
@@ -65,10 +66,18 @@ const ReportGenerator = () => {
         format: "a4",
       });
 
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+      const displayWidth = imgWidth * ratio;
+      const displayHeight = imgHeight * ratio;
+      const marginX = (pageWidth - displayWidth) / 2;
+      const marginY = (pageHeight - displayHeight) / 2;
+
+      pdf.addImage(imgData, "PNG", marginX, marginY, displayWidth, displayHeight);
       pdf.save(`raport-${Date.now()}.pdf`);
 
       toast({
@@ -87,7 +96,7 @@ const ReportGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
+    <div className="min-h-screen bg-[hsl(var(--brand-dark))] p-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4">
@@ -111,12 +120,29 @@ const ReportGenerator = () => {
                 <Input
                   id="clientName"
                   {...register("clientName")}
-                  placeholder="np. Beauty Studio Warszawa"
+                  placeholder="np. Beauty Studio"
                   className="bg-slate-950 border-slate-700 text-white"
                 />
                 {errors.clientName && (
                   <p className="text-red-400 text-sm mt-1">
                     {errors.clientName.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="city" className="text-white">
+                  Miasto salonu
+                </Label>
+                <Input
+                  id="city"
+                  {...register("city")}
+                  placeholder="np. Warszawa"
+                  className="bg-slate-950 border-slate-700 text-white"
+                />
+                {errors.city && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {errors.city.message}
                   </p>
                 )}
               </div>
