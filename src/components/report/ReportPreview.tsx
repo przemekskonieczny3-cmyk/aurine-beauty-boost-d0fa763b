@@ -165,7 +165,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </section>
 
       {/* Secondary metrics */}
-      <section className="grid grid-cols-3 gap-4 mb-8">
+      <section className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
           <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Konwersje</p>
           <p className="text-xl font-bold text-white">{data.conversions || "—"}</p>
@@ -177,6 +177,18 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
         <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
           <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Rezerwacje</p>
           <p className="text-xl font-bold text-white">{data.bookings || "—"}</p>
+        </div>
+      </section>
+
+      {/* Campaign Details */}
+      <section className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Cel kampanii</p>
+          <p className="text-base font-semibold text-white">{data.campaignObjective || "—"}</p>
+        </div>
+        <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Status kampanii</p>
+          <p className="text-base font-semibold text-white">{data.campaignStatus || "—"}</p>
         </div>
       </section>
 
@@ -273,48 +285,64 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
             <p className="text-[10px] text-emerald-300">Konkretne kolejne kroki</p>
           </div>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {data.recommendations ? (
             data.recommendations
               .split("\n")
               .filter((line) => line.trim())
-              .slice(0, 3)
+              .slice(0, 5)
               .map((rec, idx) => {
                 const shortRec =
-                  rec.length > 220 ? `${rec.slice(0, 217)}...` : rec;
+                  rec.length > 180 ? `${rec.slice(0, 177)}...` : rec;
                 return (
-                  <div key={idx} className="flex gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                      <span className="text-[10px] font-bold text-emerald-400">{idx + 1}</span>
+                  <div key={idx} className="flex gap-2">
+                    <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
                     </div>
-                    <p className="text-xs text-zinc-300 leading-relaxed">{shortRec}</p>
+                    <p className="text-[11px] text-zinc-300 leading-relaxed">{shortRec}</p>
                   </div>
                 );
               })
           ) : (
             <>
-              <div className="flex gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] font-bold text-emerald-400">1</span>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">1</span>
                 </div>
-                <p className="text-xs text-zinc-300 leading-relaxed">
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
                   Zwiększ budżet w godzinach popołudniowych (16-20), kiedy najwięcej klientek rezerwuje wizyty.
                 </p>
               </div>
-              <div className="flex gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] font-bold text-emerald-400">2</span>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">2</span>
                 </div>
-                <p className="text-xs text-zinc-300 leading-relaxed">
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
                   Dodaj kampanię remarketingową do osób, które kliknęły reklamę, ale nie dokończyły rezerwacji.
                 </p>
               </div>
-              <div className="flex gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] font-bold text-emerald-400">3</span>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">3</span>
                 </div>
-                <p className="text-xs text-zinc-300 leading-relaxed">
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
                   Pokaż w kreacjach efekt "przed i po" oraz opinie zadowolonych klientek, żeby zwiększyć zaufanie.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">4</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Testuj różne formaty kreacji (karuzele, video) i śledź, które generują najwyższe zaangażowanie.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">5</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Wprowadź promocje sezonowe i limitowane oferty, aby zwiększyć pilność i współczynnik konwersji.
                 </p>
               </div>
             </>
