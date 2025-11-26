@@ -78,10 +78,10 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-black text-white w-[794px] h-[1123px] p-10 mx-auto"
+      className="bg-black text-white w-[794px] h-[1123px] p-8 mx-auto"
     >
       {/* Header */}
-      <header className="flex items-start justify-between mb-10 border-b border-zinc-800 pb-6">
+      <header className="flex items-start justify-between mb-6 border-b border-zinc-800 pb-4">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 p-2 flex items-center justify-center shadow-lg shadow-pink-500/30">
@@ -126,7 +126,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </header>
 
       {/* KPI Cards */}
-      <section className="grid grid-cols-2 gap-4 mb-6">
+      <section className="grid grid-cols-2 gap-4 mb-4">
         <div className="bg-zinc-950 rounded-2xl border border-zinc-800/50 p-5 backdrop-blur">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-zinc-500 uppercase tracking-wider">Wyświetlenia</span>
@@ -165,7 +165,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </section>
 
       {/* Secondary metrics */}
-      <section className="grid grid-cols-3 gap-4 mb-6">
+      <section className="grid grid-cols-3 gap-4 mb-4">
         <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
           <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Konwersje</p>
           <p className="text-xl font-bold text-white">{data.conversions || "—"}</p>
@@ -181,19 +181,34 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </section>
 
       {/* Campaign Details */}
-      <section className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Cel kampanii</p>
-          <p className="text-base font-semibold text-white">{data.campaignObjective || "—"}</p>
+      <section className="grid grid-cols-2 gap-4 mb-4">
+        <div className="bg-zinc-900/50 rounded-xl p-4 space-y-2 border border-zinc-800/50">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+              <Target className="w-4 h-4 text-white" />
+            </div>
+            <p className="text-xs font-semibold text-white">Cel kampanii</p>
+          </div>
+          <p className="text-[10px] text-zinc-400 leading-relaxed">
+            {data.campaignObjective || "—"}
+          </p>
         </div>
-        <div className="bg-zinc-950/50 rounded-xl border border-zinc-800/30 px-5 py-3 backdrop-blur">
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Status kampanii</p>
-          <p className="text-base font-semibold text-white">{data.campaignStatus || "—"}</p>
+        <div className="bg-zinc-900/50 rounded-xl p-4 space-y-2 border border-zinc-800/50">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4 text-white" />
+            </div>
+            <p className="text-xs font-semibold text-white">Status</p>
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <span className="text-[9px] text-emerald-300 font-medium">{data.campaignStatus || "Aktywna"}</span>
+          </div>
         </div>
       </section>
 
       {/* Charts */}
-      <section className="space-y-5 mb-8">
+      <section className="space-y-4 mb-5">
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-pink-950/20 via-zinc-950/50 to-zinc-950/50 rounded-2xl border border-pink-800/20 p-4 flex flex-col gap-3 backdrop-blur shadow-lg">
             <div className="flex items-center gap-2">
@@ -350,7 +365,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
         </div>
       </section>
 
-      <footer className="mt-6 pt-3 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
+      <footer className="mt-4 pt-3 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
         <div className="flex items-center gap-3">
           <p>© 2025 Aurine Agency · Kampanie Facebook ads dla salonów beauty</p>
           <span className="text-zinc-800">•</span>
