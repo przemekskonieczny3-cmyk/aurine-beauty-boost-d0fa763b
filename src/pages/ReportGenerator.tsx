@@ -50,20 +50,9 @@ const ReportGenerator = () => {
     resolver: zodResolver(reportSchema),
   });
 
-  const applyExportStyles = (root: HTMLElement) => {
-    const targets = root.querySelectorAll<HTMLElement>("[data-export-solid='true']");
-    const originals: Array<{ el: HTMLElement; className: string }> = [];
-
-    targets.forEach((el) => {
-      originals.push({ el, className: el.className });
-      el.classList.add("report-export-solid");
-    });
-
-    return () => {
-      originals.forEach(({ el, className }) => {
-        el.className = className;
-      });
-    };
+  const applyExportStyles = (_root: HTMLElement) => {
+    // Podczas eksportu nie zmieniamy już stylów – chcemy 1:1 jak w podglądzie
+    return () => {};
   };
 
   const onSubmit = async (data: ReportFormData) => {
@@ -118,15 +107,14 @@ const ReportGenerator = () => {
       element.style.maxWidth = "none";
 
       const canvas = await html2canvas(element, {
-        scale: 1, // Niższa skala = lżejszy PDF
+        scale: 2,
         backgroundColor: "#050509",
-        width: 794, // szerokość A4 w px przy 96 DPI
-        windowWidth: 794,
         useCORS: true,
         allowTaint: true,
+        foreignObjectRendering: true,
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 0.65);
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -146,13 +134,13 @@ const ReportGenerator = () => {
       let heightLeft = pdfHeight;
       let position = 0;
 
-      pdf.addImage(imgData, "JPEG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
+      pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
       heightLeft -= pageHeight;
 
       while (heightLeft > 0) {
         position = heightLeft - pdfHeight;
         pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
+        pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
         heightLeft -= pageHeight;
       }
 
@@ -189,20 +177,8 @@ const ReportGenerator = () => {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        logging: false,
-        backgroundColor: '#000000',
-        onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.getElementById("report-preview-landscape");
-          if (clonedElement) {
-            clonedElement.style.transform = 'none';
-            clonedElement.style.animation = 'none';
-            const allElements = clonedElement.getElementsByTagName('*');
-            for (let el of allElements) {
-              (el as HTMLElement).style.animation = 'none';
-              (el as HTMLElement).style.transition = 'none';
-            }
-          }
-        }
+        backgroundColor: null,
+        foreignObjectRendering: true,
       });
 
       canvas.toBlob((blob) => {
