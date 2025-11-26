@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Eye, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import InvoicePreview from "@/components/invoice/InvoicePreview";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 type InvoiceType = "advance" | "final" | "full";
 
 const InvoiceGenerator = () => {
   const navigate = useNavigate();
   const [invoiceType, setInvoiceType] = useState<InvoiceType>("full");
+  const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState({
     clientName: "",
     clientAddress: "",
@@ -43,7 +47,7 @@ const InvoiceGenerator = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleGenerate = () => {
+  const handlePreview = () => {
     if (!formData.clientName || !formData.invoiceNumber || !formData.amount) {
       toast.error("Uzupełnij wszystkie wymagane pola");
       return;
@@ -54,8 +58,58 @@ const InvoiceGenerator = () => {
       return;
     }
 
-    toast.success("Generowanie faktury...");
-    // TODO: Implement PDF generation
+    setShowPreview(true);
+  };
+
+  const handleGeneratePDF = async () => {
+    toast.loading("Generowanie PDF...");
+    
+    const element = document.getElementById("invoice-preview");
+    if (!element) return;
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#000000",
+      });
+
+      const imgData = canvas.toDataURL("image/png", 0.95);
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [imgWidth, imgHeight],
+        compress: true,
+      });
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight, undefined, "FAST");
+
+      const fileName = `${formData.invoiceNumber.replace(/\//g, "-")}-${formData.clientName.replace(/\s+/g, "-")}.pdf`;
+      pdf.save(fileName);
+
+      // Save to history
+      const historyItem = {
+        id: Date.now().toString(),
+        type: "invoice" as const,
+        subtype: invoiceType,
+        data: { ...formData, invoiceType },
+        generatedAt: new Date().toISOString(),
+        fileName,
+      };
+
+      const history = JSON.parse(localStorage.getItem("documentHistory") || "[]");
+      history.unshift(historyItem);
+      localStorage.setItem("documentHistory", JSON.stringify(history));
+
+      toast.success("Faktura została wygenerowana");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Błąd podczas generowania PDF");
+    }
   };
 
   return (
@@ -80,6 +134,14 @@ const InvoiceGenerator = () => {
               />
               <h1 className="text-xl font-bold">Generator Faktur</h1>
             </div>
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/document-history")}
+              className="hover:bg-zinc-800"
+            >
+              <History className="w-5 h-5 mr-2" />
+              Historia
+            </Button>
           </div>
         </div>
       </header>
@@ -219,14 +281,35 @@ const InvoiceGenerator = () => {
             {/* Generate Button */}
             <div className="mt-8">
               <Button
-                onClick={handleGenerate}
+                onClick={handlePreview}
                 className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-lg py-6"
               >
-                <Download className="w-5 h-5 mr-2" />
-                Wygeneruj fakturę
+                <Eye className="w-5 h-5 mr-2" />
+                Podgląd i generowanie
               </Button>
             </div>
           </div>
+
+          {/* Preview Section */}
+          {showPreview && (
+            <div className="mt-8 animate-fade-in">
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white">Podgląd faktury</h2>
+                  <Button
+                    onClick={handleGeneratePDF}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                  >
+                    <Download className="w-5 h-5 mr-2" />
+                    Pobierz PDF
+                  </Button>
+                </div>
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <InvoicePreview data={{ ...formData, invoiceType }} />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

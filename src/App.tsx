@@ -7,6 +7,7 @@ import GeneratorSelector from "./pages/GeneratorSelector";
 import ReportGenerator from "./pages/ReportGenerator";
 import InvoiceGenerator from "./pages/InvoiceGenerator";
 import ContractGenerator from "./pages/ContractGenerator";
+import DocumentHistory from "./pages/DocumentHistory";
 import NotFound from "./pages/NotFound";
 
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/invoice-generator" element={<InvoiceGenerator />} />
           <Route path="/contract-generator" element={<ContractGenerator />} />
+          <Route path="/document-history" element={<DocumentHistory />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
