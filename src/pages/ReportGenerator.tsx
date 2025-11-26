@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ReportPreview } from "@/components/report/ReportPreview";
 import { ReportPreviewLandscape } from "@/components/report/ReportPreviewLandscape";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 
 const reportSchema = z.object({
@@ -93,29 +93,15 @@ const ReportGenerator = () => {
     const element = document.getElementById("report-preview");
     if (!element) return;
 
-    const originalWidth = element.style.width;
-    const originalAspect = element.style.aspectRatio;
-    const originalMaxWidth = element.style.maxWidth;
-
     setIsGenerating(true);
-    const cleanupExportStyles = applyExportStyles(element);
 
     try {
-      // Zapewnij stałą szerokość A4 na potrzeby PDF (pionowo)
-      element.style.width = "210mm"; // szerokość A4
-      element.style.aspectRatio = "";
-      element.style.maxWidth = "none";
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
+      const imgData = await toPng(element, {
+        cacheBust: true,
+        pixelRatio: 2,
         backgroundColor: "#050509",
-        useCORS: true,
-        allowTaint: true,
-        scrollX: 0,
-        scrollY: 0,
       });
 
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -123,28 +109,21 @@ const ReportGenerator = () => {
         compress: true,
       });
 
+      const imgProps = pdf.getImageProperties(imgData);
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
 
-      const ratio = pageWidth / imgWidth;
-      const pdfHeight = imgHeight * ratio;
+      const imgWidth = imgProps.width;
+      const imgHeight = imgProps.height;
+      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
 
-      // Obsługa wielu stron, jeśli raport jest długi
-      let heightLeft = pdfHeight;
-      let position = 0;
+      const printWidth = imgWidth * ratio;
+      const printHeight = imgHeight * ratio;
 
-      pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
-      heightLeft -= pageHeight;
+      const x = (pageWidth - printWidth) / 2;
+      const y = (pageHeight - printHeight) / 2;
 
-      while (heightLeft > 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, pageWidth, pdfHeight, undefined, "FAST");
-        heightLeft -= pageHeight;
-      }
-
+      pdf.addImage(imgData, "PNG", x, y, printWidth, printHeight, undefined, "FAST");
       pdf.save(`raport-${Date.now()}.pdf`);
 
       toast({
@@ -152,16 +131,13 @@ const ReportGenerator = () => {
         description: "Raport został pobrany",
       });
     } catch (error) {
+      console.error("Error generating PDF:", error);
       toast({
         title: "Błąd",
         description: "Nie udało się wygenerować PDF",
         variant: "destructive",
       });
     } finally {
-      element.style.width = originalWidth;
-      element.style.aspectRatio = originalAspect;
-      element.style.maxWidth = originalMaxWidth;
-      cleanupExportStyles();
       setIsGenerating(false);
     }
   };
@@ -171,41 +147,31 @@ const ReportGenerator = () => {
     if (!element) return;
 
     setIsGenerating(true);
-    const cleanupExportStyles = applyExportStyles(element);
 
     try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#000000",
-        scrollX: 0,
-        scrollY: 0,
+      const imgData = await toPng(element, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#050509",
       });
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = `raport-${Date.now()}.png`;
-          link.href = url;
-          link.click();
-          URL.revokeObjectURL(url);
-        }
-        
-        toast({
-          title: "Obraz pobrany!",
-          description: "Raport został zapisany jako PNG w formacie poziomym 16:9",
-        });
-      }, 'image/png', 1.0);
+      const link = document.createElement("a");
+      link.download = `raport-${Date.now()}.png`;
+      link.href = imgData;
+      link.click();
+
+      toast({
+        title: "Obraz pobrany!",
+        description: "Raport został zapisany jako PNG w formacie poziomym 16:9",
+      });
     } catch (error) {
+      console.error("Error downloading image:", error);
       toast({
         title: "Błąd",
         description: "Nie udało się pobrać obrazu",
         variant: "destructive",
       });
     } finally {
-      cleanupExportStyles();
       setIsGenerating(false);
     }
   };
