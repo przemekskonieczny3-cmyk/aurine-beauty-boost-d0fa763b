@@ -78,8 +78,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-black text-white w-full min-h-screen p-10"
-      style={{ maxWidth: '794px', margin: '0 auto' }}
+      className="bg-black text-white w-[794px] h-[1123px] p-10 mx-auto"
     >
       {/* Header */}
       <header className="flex items-start justify-between mb-10 border-b border-zinc-800 pb-6">
@@ -279,14 +278,19 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
             data.recommendations
               .split("\n")
               .filter((line) => line.trim())
-              .map((rec, idx) => (
-                <div key={idx} className="flex gap-3">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-emerald-400">{idx + 1}</span>
+              .slice(0, 3)
+              .map((rec, idx) => {
+                const shortRec =
+                  rec.length > 220 ? `${rec.slice(0, 217)}...` : rec;
+                return (
+                  <div key={idx} className="flex gap-3">
+                    <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[10px] font-bold text-emerald-400">{idx + 1}</span>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">{shortRec}</p>
                   </div>
-                  <p className="text-xs text-zinc-300 leading-relaxed">{rec}</p>
-                </div>
-              ))
+                );
+              })
           ) : (
             <>
               <div className="flex gap-3">

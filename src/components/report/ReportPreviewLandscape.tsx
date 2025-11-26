@@ -381,16 +381,24 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                   <p className="text-[10px] text-emerald-300">Dalsze działania</p>
                 </div>
               </div>
-              <div className="flex-1 space-y-2.5 overflow-hidden">
+              <div className="flex-1 space-y-2 overflow-hidden">
                 {data.recommendations ? (
-                  data.recommendations.split('\n').filter(line => line.trim()).slice(0, 5).map((rec, idx) => (
-                    <div key={idx} className="flex gap-2.5 items-start">
-                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">{rec}</p>
-                    </div>
-                  ))
+                  data.recommendations
+                    .split("\n")
+                    .filter((line) => line.trim())
+                    .slice(0, 3)
+                    .map((rec, idx) => {
+                      const shortRec =
+                        rec.length > 220 ? `${rec.slice(0, 217)}...` : rec;
+                      return (
+                        <div key={idx} className="flex gap-2.5 items-start">
+                          <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
+                          </div>
+                          <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">{shortRec}</p>
+                        </div>
+                      );
+                    })
                 ) : (
                   <>
                     <div className="flex gap-2.5 items-start">

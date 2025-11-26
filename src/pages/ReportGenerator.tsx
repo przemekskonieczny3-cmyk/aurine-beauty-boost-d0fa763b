@@ -146,7 +146,6 @@ const ReportGenerator = () => {
     setIsGenerating(true);
 
     try {
-      // Pobierz naturalną wysokość elementu
       const canvas = await toPng(element, {
         cacheBust: true,
         pixelRatio: 3,
@@ -155,37 +154,30 @@ const ReportGenerator = () => {
 
       const img = new Image();
       img.src = canvas;
-      await new Promise((resolve) => { img.onload = resolve; });
-
-      const imgWidth = img.width;
-      const imgHeight = img.height;
-      const imgAspectRatio = imgWidth / imgHeight;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
 
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
-        format: "a4",
+        format: [794, 1123],
         compress: true,
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      const pdfAspectRatio = pdfWidth / pdfHeight;
 
-      let finalWidth = pdfWidth;
-      let finalHeight = pdfHeight;
-
-      // Dopasuj obraz do strony zachowując proporcje
-      if (imgAspectRatio > pdfAspectRatio) {
-        finalHeight = pdfWidth / imgAspectRatio;
-      } else {
-        finalWidth = pdfHeight * imgAspectRatio;
-      }
-
-      const xOffset = (pdfWidth - finalWidth) / 2;
-      const yOffset = (pdfHeight - finalHeight) / 2;
-
-      pdf.addImage(canvas, "PNG", xOffset, yOffset, finalWidth, finalHeight, undefined, "FAST");
+      pdf.addImage(
+        canvas,
+        "PNG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight,
+        undefined,
+        "FAST"
+      );
       
       const periodCode = parseReportPeriod(reportData.period || "");
       const salonName = sanitizeSalonName(reportData.clientName);
@@ -216,22 +208,30 @@ const ReportGenerator = () => {
     try {
       const imgData = await toPng(element, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 3,
         backgroundColor: "#050509",
       });
 
-      // 16:9 landscape w pt: 842 x 595 (zamienione A4)
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "pt",
-        format: "a4",
+        format: [1600, 900],
         compress: true,
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+      pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight,
+        undefined,
+        "FAST"
+      );
       
       const periodCode = parseReportPeriod(reportData.period || "");
       const salonName = sanitizeSalonName(reportData.clientName);
