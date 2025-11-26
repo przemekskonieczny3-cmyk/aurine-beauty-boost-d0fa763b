@@ -158,10 +158,14 @@ const ReportGenerator = () => {
         img.onload = resolve;
       });
 
+      // Use actual image dimensions to create PDF
+      const imgWidth = img.width;
+      const imgHeight = img.height;
+
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "pt",
-        format: [794, 1123],
+        unit: "px",
+        format: [imgWidth, imgHeight],
         compress: true,
       });
 
