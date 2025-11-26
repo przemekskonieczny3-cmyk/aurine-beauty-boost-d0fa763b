@@ -294,114 +294,80 @@ const ReportGenerator = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-zinc-800 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img
-                src="/src/assets/aurine-logo.png"
-                alt="Aurine"
-                className="h-10 w-auto"
-              />
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = '/'}
-              className="border-zinc-800 hover:border-pink-500/50 transition-colors"
-            >
-              Powrót do generatorów
-            </Button>
-          </div>
+    <div className="min-h-screen bg-[hsl(var(--brand-dark))] p-8">
+      <div className={containerClass}>
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-4">
+            Generator Raportów Facebook Ads
+          </h1>
+          <p className="text-slate-400 text-lg">
+            Profesjonalne raporty dla salonów beauty - Aurine Agency
+          </p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-16">
-        <div className="max-w-6xl mx-auto">
-          {/* Title Section */}
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-rose-500/20 border border-pink-500/30 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-pink-500" />
-              </div>
-            </div>
-              Generator Raportów Facebook Ads
-            </h1>
-            <p className="text-zinc-400 text-lg">
-              Profesjonalne raporty Facebook Ads dla salonów beauty
-            </p>
-          </div>
-
-          {isLandscape && reportData ? (
-            <div className="space-y-6 animate-fade-in">
-              <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Podgląd - tryb pełnoekranowy (poziomy)
-                  </h2>
-                  <p className="text-zinc-400 text-sm">
-                    Widok poziomy dopasowany do szerokości ekranu. Kliknij "Powrót do edycji", aby wrócić do formularza.
-                  </p>
-                </div>
-                <div className="flex gap-3 flex-wrap">
-                  <Button
-                    onClick={() => setIsLandscape(false)}
-                    variant="outline"
-                    className="border-zinc-800 hover:border-pink-500/50 transition-colors"
-                  >
-                    Powrót do edycji
-                  </Button>
-                  <Button
-                    onClick={downloadAsImage}
-                    disabled={isGenerating}
-                    variant="outline"
-                    className="border-zinc-800 hover:border-pink-500/50 transition-colors"
-                  >
-                    {isGenerating ? "Pobieranie..." : "Pobierz PNG 16:9"}
-                  </Button>
-                  <Button
-                    onClick={generateLandscapePDF}
-                    disabled={isGenerating}
-                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0"
-                  >
-                    {isGenerating ? "Generowanie..." : "Pobierz PDF 16:9"}
-                  </Button>
-                  <Button
-                    onClick={generatePDF}
-                    disabled={isGenerating}
-                    variant="outline"
-                    className="border-zinc-800 hover:border-pink-500/50 transition-colors"
-                  >
-                    {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative rounded-2xl border border-zinc-800 bg-black/50 p-4 flex items-center justify-center">
-                  <div className="w-full max-w-[1920px]">
-                    <ReportPreviewLandscape data={reportData} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Ukryty pionowy podgląd tylko do generowania PDF */}
-              <div className="fixed -left-[3000px] top-0">
-                <ReportPreview data={reportData} />
-              </div>
-            </div>
-          ) : (
-            <div className="grid lg:grid-cols-2 gap-8 animate-fade-in">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative bg-gradient-to-br from-pink-500/5 to-rose-500/5 border border-zinc-800 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Dane kampanii Facebook Ads
+        {isLandscape && reportData ? (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Podgląd - tryb pełnoekranowy (poziomy)
                 </h2>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <p className="text-slate-400 text-sm">
+                  Widok poziomy dopasowany do szerokości ekranu komputera. Kliknij "Powrót do edycji", aby wrócić do formularza.
+                </p>
+              </div>
+              <div className="flex gap-3 flex-wrap">
+                <Button
+                  onClick={() => setIsLandscape(false)}
+                  variant="outline"
+                  className="border-slate-700 text-white hover:bg-slate-800"
+                >
+                  Powrót do edycji
+                </Button>
+                <Button
+                  onClick={downloadAsImage}
+                  disabled={isGenerating}
+                  variant="outline"
+                  className="border-pink-600 text-pink-400 hover:bg-pink-950"
+                >
+                  {isGenerating ? "Pobieranie..." : "Pobierz PNG 16:9"}
+                </Button>
+                <Button
+                  onClick={generateLandscapePDF}
+                  disabled={isGenerating}
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  {isGenerating ? "Generowanie..." : "Pobierz PDF 16:9"}
+                </Button>
+                <Button
+                  onClick={generatePDF}
+                  disabled={isGenerating}
+                  variant="outline"
+                  className="border-slate-700 text-white hover:bg-slate-800"
+                >
+                  {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-slate-700 bg-slate-950/70 p-4 flex items-center justify-center">
+              <div className="w-full max-w-[1920px]">
+                <ReportPreviewLandscape data={reportData} />
+              </div>
+            </div>
+
+            {/* Ukryty pionowy podgląd tylko do generowania PDF */}
+            <div className="fixed -left-[3000px] top-0">
+              <ReportPreview data={reportData} />
+            </div>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-2 gap-8">
+            <Card className="p-8 bg-slate-900/50 border-slate-800">
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Dane kampanii Facebook Ads
+              </h2>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
                   <Label htmlFor="clientName" className="text-white">
                     Nazwa salonu
@@ -692,64 +658,44 @@ const ReportGenerator = () => {
                   </div>
                 </div>
 
-                  </Button>
-                </form>
-              </div>
-            </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                >
+                  Generuj podgląd raportu
+                </Button>
+              </form>
+            </Card>
 
             {reportData && (
-              <div className="relative group animate-fade-in" style={{ animationDelay: "100ms" }}>
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative space-y-4">
-                  <div className="flex justify-between items-center flex-wrap gap-4">
-                    <h2 className="text-2xl font-bold text-white">Podgląd</h2>
-                    <div className="flex gap-3 items-center flex-wrap">
-                      <Button
-                        onClick={() => setIsLandscape(true)}
-                        variant="outline"
-                        className="border-zinc-800 hover:border-pink-500/50 transition-colors"
-                      >
-                        Widok na pełnym ekranie
-                      </Button>
-                      <Button
-                        onClick={generatePDF}
-                        disabled={isGenerating}
-                        className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0"
-                      >
-                        {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
-                      </Button>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <h2 className="text-2xl font-bold text-white">Podgląd</h2>
+                  <div className="flex gap-3 items-center flex-wrap">
+                    <Button
+                      onClick={() => setIsLandscape(true)}
+                      variant="outline"
+                      className="border-slate-700 text-white hover:bg-slate-800"
+                    >
+                      Widok na pełnym ekranie
+                    </Button>
+                    <Button
+                      onClick={generatePDF}
+                      disabled={isGenerating}
+                      className="bg-pink-600 hover:bg-pink-700"
+                    >
+                      {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
+                    </Button>
                   </div>
-                  <div className="border-2 border-zinc-800 rounded-2xl overflow-hidden bg-black/50">
-                    <ReportPreview data={reportData} />
-                  </div>
+                </div>
+                <div className="border-2 border-slate-700 rounded-lg overflow-hidden">
+                  <ReportPreview data={reportData} />
                 </div>
               </div>
             )}
           </div>
         )}
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 mt-20">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-500">
-            <div>
-              <p>© 2025 Aurine Agency · Kampanie Facebook ads dla salonów beauty</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <a href="https://aurine.pl" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 transition-colors">
-                aurine.pl
-              </a>
-              <span>·</span>
-              <a href="https://wa.me/48731856524" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-pink-500 transition-colors">
-                <span>+48 731 856 524</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };
