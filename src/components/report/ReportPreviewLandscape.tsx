@@ -1,4 +1,4 @@
-import { TrendingUp, Target, CheckCircle2, Sparkles } from "lucide-react";
+import { TrendingUp, Target, CheckCircle2, Sparkles, Phone } from "lucide-react";
 import aurinelogo from "@/assets/aurine-report-logo.png";
 import { SimplePieChart, SimpleBarChart, SimpleLineChart } from "./SimpleCharts";
 
@@ -165,8 +165,8 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
           </div>
 
           <div className="pt-4 text-[10px] text-zinc-600 space-y-0.5">
-            <p className="text-zinc-500">Premium Analytics Report</p>
-            <p className="text-zinc-700">aurine-agency.com</p>
+            <p className="text-zinc-500">Powered by Aurine</p>
+            <p className="text-zinc-700">aurine.pl</p>
           </div>
         </aside>
 
@@ -393,8 +393,11 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
 
           {/* Footer */}
           <footer className="pt-2 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
-            <p>© 2024 Aurine Agency · Profesjonalne kampanie dla salonów beauty</p>
-            <p>facebook.com/aurine.agency</p>
+            <p>© 2025 Aurine Agency · Kampanie Facebook ads dla salonów beauty</p>
+            <div className="flex items-center gap-2">
+              <Phone className="w-3 h-3 text-emerald-400" />
+              <p className="text-zinc-600">+48 731 856 524</p>
+            </div>
           </footer>
         </main>
       </div>
