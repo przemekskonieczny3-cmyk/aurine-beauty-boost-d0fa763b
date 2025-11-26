@@ -78,7 +78,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-black text-white w-[794px] h-[1123px] p-8 mx-auto"
+      className="bg-black text-white w-[794px] min-h-[1123px] p-8 mx-auto"
     >
       {/* Header */}
       <header className="flex items-start justify-between mb-6 border-b border-zinc-800 pb-4">
@@ -339,7 +339,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
               .slice(0, 5)
               .map((rec, idx) => {
                 const shortRec =
-                  rec.length > 140 ? `${rec.slice(0, 137)}...` : rec;
+                  rec.length > 165 ? `${rec.slice(0, 162)}...` : rec;
                 return (
                   <div key={idx} className="flex gap-2">
                     <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
