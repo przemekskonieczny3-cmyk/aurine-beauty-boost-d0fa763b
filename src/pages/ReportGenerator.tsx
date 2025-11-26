@@ -111,7 +111,8 @@ const ReportGenerator = () => {
         backgroundColor: "#050509",
         useCORS: true,
         allowTaint: true,
-        foreignObjectRendering: true,
+        scrollX: 0,
+        scrollY: 0,
       });
 
       const imgData = canvas.toDataURL("image/png");
@@ -177,8 +178,9 @@ const ReportGenerator = () => {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: null,
-        foreignObjectRendering: true,
+        backgroundColor: "#000000",
+        scrollX: 0,
+        scrollY: 0,
       });
 
       canvas.toBlob((blob) => {
