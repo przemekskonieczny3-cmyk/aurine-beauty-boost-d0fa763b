@@ -43,16 +43,43 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<ReportFormData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
-  const [reportNumber, setReportNumber] = useState<number>(1);
   const containerClass = isLandscape ? "mx-auto" : "max-w-7xl mx-auto";
 
-  // Funkcja do pobrania i inkrementacji numeru raportu
-  const getNextReportNumber = () => {
-    const currentNumber = parseInt(localStorage.getItem("reportCounter") || "0", 10);
-    const nextNumber = currentNumber + 1;
-    localStorage.setItem("reportCounter", nextNumber.toString());
-    setReportNumber(nextNumber);
-    return nextNumber;
+  // Funkcja do parsowania okresu raportu (np. "Listopad 2025" -> "2025-11")
+  const parseReportPeriod = (period: string): string => {
+    const monthMap: { [key: string]: string } = {
+      "styczeń": "01", "styczen": "01",
+      "luty": "02",
+      "marzec": "03",
+      "kwiecień": "04", "kwiecien": "04",
+      "maj": "05",
+      "czerwiec": "06",
+      "lipiec": "07",
+      "sierpień": "08", "sierpien": "08",
+      "wrzesień": "09", "wrzesien": "09",
+      "październik": "10", "pazdziernik": "10",
+      "listopad": "11",
+      "grudzień": "12", "grudzien": "12",
+    };
+
+    const normalized = period.toLowerCase().trim();
+    const parts = normalized.split(/\s+/);
+    
+    let month = "01";
+    let year = new Date().getFullYear().toString();
+
+    // Szukamy miesiąca
+    for (const part of parts) {
+      if (monthMap[part]) {
+        month = monthMap[part];
+      }
+      // Szukamy roku (4 cyfry)
+      if (/^\d{4}$/.test(part)) {
+        year = part;
+      }
+    }
+
+    return `${year}-${month}`;
   };
 
   // Funkcja do czyszczenia nazwy salonu dla nazwy pliku
@@ -119,13 +146,21 @@ const ReportGenerator = () => {
     setIsGenerating(true);
 
     try {
-      const imgData = await toPng(element, {
+      // Pobierz naturalną wysokość elementu
+      const canvas = await toPng(element, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 3,
         backgroundColor: "#050509",
       });
 
-      // A4 portrait w px: 595 x 842 (72 DPI)
+      const img = new Image();
+      img.src = canvas;
+      await new Promise((resolve) => { img.onload = resolve; });
+
+      const imgWidth = img.width;
+      const imgHeight = img.height;
+      const imgAspectRatio = imgWidth / imgHeight;
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
@@ -135,12 +170,26 @@ const ReportGenerator = () => {
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfAspectRatio = pdfWidth / pdfHeight;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+      let finalWidth = pdfWidth;
+      let finalHeight = pdfHeight;
+
+      // Dopasuj obraz do strony zachowując proporcje
+      if (imgAspectRatio > pdfAspectRatio) {
+        finalHeight = pdfWidth / imgAspectRatio;
+      } else {
+        finalWidth = pdfHeight * imgAspectRatio;
+      }
+
+      const xOffset = (pdfWidth - finalWidth) / 2;
+      const yOffset = (pdfHeight - finalHeight) / 2;
+
+      pdf.addImage(canvas, "PNG", xOffset, yOffset, finalWidth, finalHeight, undefined, "FAST");
       
-      const num = getNextReportNumber();
+      const periodCode = parseReportPeriod(reportData.period || "");
       const salonName = sanitizeSalonName(reportData.clientName);
-      pdf.save(`raport-${num}-${salonName}-pionowy.pdf`);
+      pdf.save(`${periodCode}-${salonName}-pionowy.pdf`);
 
       toast({
         title: "PDF wygenerowany!",
@@ -184,9 +233,9 @@ const ReportGenerator = () => {
 
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
       
-      const num = getNextReportNumber();
+      const periodCode = parseReportPeriod(reportData.period || "");
       const salonName = sanitizeSalonName(reportData.clientName);
-      pdf.save(`raport-${num}-${salonName}-16-9.pdf`);
+      pdf.save(`${periodCode}-${salonName}-16-9.pdf`);
 
       toast({
         title: "PDF 16:9 wygenerowany!",
@@ -217,11 +266,11 @@ const ReportGenerator = () => {
         backgroundColor: "#050509",
       });
 
-      const num = getNextReportNumber();
+      const periodCode = parseReportPeriod(reportData.period || "");
       const salonName = sanitizeSalonName(reportData.clientName);
 
       const link = document.createElement("a");
-      link.download = `raport-${num}-${salonName}.png`;
+      link.download = `${periodCode}-${salonName}.png`;
       link.href = imgData;
       link.click();
 
