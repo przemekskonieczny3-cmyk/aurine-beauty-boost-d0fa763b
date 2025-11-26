@@ -214,7 +214,7 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                 Analytics Dashboard
               </h1>
               <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-                Kompleksowa analiza wyników kampanii reklamowej dla salonu beauty — kluczowe metryki efektywności i konwersji.
+                Kompleksowa analiza wyników kampanii reklamowej dla salonu beauty - kluczowe metryki efektywności i konwersji.
               </p>
             </div>
             <div className="text-right">
