@@ -389,7 +389,7 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
               .slice(0, 5)
               .map((rec, idx) => {
                 const shortRec =
-                  rec.length > 180 ? `${rec.slice(0, 177)}...` : rec;
+                  rec.length > 140 ? `${rec.slice(0, 137)}...` : rec;
                 return (
                   <div key={idx} className="flex gap-2">
                     <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
