@@ -207,9 +207,40 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
         </div>
       </section>
 
+      {/* Key Metrics */}
+      <section className="bg-gradient-to-br from-purple-950/30 via-purple-900/20 to-transparent rounded-xl p-4 border border-purple-700/30 mb-4">
+        <p className="text-[9px] uppercase tracking-wider text-purple-300 mb-2">Kluczowe wskaźniki</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-col">
+            <span className="text-[9px] text-zinc-400">Średni koszt kliknięcia</span>
+            <span className="text-sm font-bold text-purple-300">
+              {data.clicks && data.budget ? 
+                `${(parseNumber(data.budget) / parseNumber(data.clicks)).toFixed(2)} PLN` 
+                : "—"}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[9px] text-zinc-400">Współczynnik konwersji</span>
+            <span className="text-sm font-bold text-pink-300">
+              {data.conversions && data.clicks ? 
+                `${((parseNumber(data.conversions) / parseNumber(data.clicks)) * 100).toFixed(1)}%` 
+                : "—"}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[9px] text-zinc-400">ROI kampanii</span>
+            <span className="text-sm font-bold text-emerald-300">
+              {data.bookings && data.budget ? 
+                `${((parseNumber(data.bookings) * 150) / parseNumber(data.budget) * 100).toFixed(0)}%` 
+                : "—"}
+            </span>
+          </div>
+        </div>
+      </section>
+
       {/* Charts */}
-      <section className="space-y-4 mb-5">
-        <div className="grid grid-cols-2 gap-4">
+      <section className="space-y-3 mb-4">
+        <div className="grid grid-cols-2 gap-3">
           <div className="bg-gradient-to-br from-pink-950/20 via-zinc-950/50 to-zinc-950/50 rounded-2xl border border-pink-800/20 p-4 flex flex-col gap-3 backdrop-blur shadow-lg">
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-pink-500 to-rose-600 w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
@@ -245,7 +276,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div className="bg-gradient-to-br from-purple-950/20 via-zinc-950/50 to-zinc-950/50 rounded-2xl border border-purple-800/20 p-4 flex flex-col gap-3 backdrop-blur shadow-lg">
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-purple-500 to-purple-600 w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -290,7 +321,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
       </section>
 
       {/* Recommendations */}
-      <section className="bg-gradient-to-br from-emerald-950/30 via-zinc-950/60 to-zinc-950/50 rounded-2xl border border-emerald-800/30 p-5 flex flex-col gap-4 backdrop-blur">
+      <section className="bg-gradient-to-br from-emerald-950/30 via-zinc-950/60 to-zinc-950/50 rounded-2xl border border-emerald-800/30 p-4 flex flex-col gap-3 backdrop-blur">
         <div className="flex items-center gap-2">
           <div className="bg-gradient-to-br from-emerald-500 to-teal-600 w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
             <Sparkles className="w-4 h-4 text-white" />
@@ -308,7 +339,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
               .slice(0, 5)
               .map((rec, idx) => {
                 const shortRec =
-                  rec.length > 180 ? `${rec.slice(0, 177)}...` : rec;
+                  rec.length > 140 ? `${rec.slice(0, 137)}...` : rec;
                 return (
                   <div key={idx} className="flex gap-2">
                     <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
@@ -365,7 +396,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
         </div>
       </section>
 
-      <footer className="mt-4 pt-3 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
+      <footer className="mt-3 pt-2 border-t border-zinc-900 flex items-center justify-between text-[9px] text-zinc-700">
         <div className="flex items-center gap-3">
           <p>© 2025 Aurine Agency · Kampanie Facebook ads dla salonów beauty</p>
           <span className="text-zinc-800">•</span>
