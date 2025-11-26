@@ -25,6 +25,8 @@ const reportSchema = z.object({
   conversions: z.string().min(1, "Pole wymagane"),
   costPerConversion: z.string().min(1, "Pole wymagane"),
   bookings: z.string().min(1, "Pole wymagane"),
+  campaignObjective: z.string().optional(),
+  campaignStatus: z.string().optional(),
   // Optional - dane do wykresów
   engagementRate: z.string().optional(),
   weeklyReachData: z.string().optional(), // format: "15000,19000,25000,26000"
@@ -124,10 +126,63 @@ const ReportGenerator = () => {
       const y = (pageHeight - printHeight) / 2;
 
       pdf.addImage(imgData, "PNG", x, y, printWidth, printHeight, undefined, "FAST");
-      pdf.save(`raport-${Date.now()}.pdf`);
+      pdf.save(`raport-pionowy-${Date.now()}.pdf`);
 
       toast({
         title: "PDF wygenerowany!",
+        description: "Raport został pobrany",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Błąd",
+        description: "Nie udało się wygenerować PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const generateLandscapePDF = async () => {
+    const element = document.getElementById("report-preview-landscape");
+    if (!element) return;
+
+    setIsGenerating(true);
+
+    try {
+      const imgData = await toPng(element, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#050509",
+      });
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = imgProps.width;
+      const imgHeight = imgProps.height;
+      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+      const printWidth = imgWidth * ratio;
+      const printHeight = imgHeight * ratio;
+
+      const x = (pageWidth - printWidth) / 2;
+      const y = (pageHeight - printHeight) / 2;
+
+      pdf.addImage(imgData, "PNG", x, y, printWidth, printHeight, undefined, "FAST");
+      pdf.save(`raport-16-9-${Date.now()}.pdf`);
+
+      toast({
+        title: "PDF 16:9 wygenerowany!",
         description: "Raport został pobrany",
       });
     } catch (error) {
@@ -212,14 +267,22 @@ const ReportGenerator = () => {
                   variant="outline"
                   className="border-pink-600 text-pink-400 hover:bg-pink-950"
                 >
-                  {isGenerating ? "Pobieranie..." : "Pobierz PNG"}
+                  {isGenerating ? "Pobieranie..." : "Pobierz PNG 16:9"}
+                </Button>
+                <Button
+                  onClick={generateLandscapePDF}
+                  disabled={isGenerating}
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  {isGenerating ? "Generowanie..." : "Pobierz PDF 16:9"}
                 </Button>
                 <Button
                   onClick={generatePDF}
                   disabled={isGenerating}
-                  className="bg-pink-600 hover:bg-pink-700"
+                  variant="outline"
+                  className="border-slate-700 text-white hover:bg-slate-800"
                 >
-                  {isGenerating ? "Generowanie..." : "Pobierz PDF"}
+                  {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
                 </Button>
               </div>
             </div>
@@ -429,6 +492,30 @@ const ReportGenerator = () => {
                       </p>
                     )}
                   </div>
+
+                  <div className="col-span-2">
+                    <Label htmlFor="campaignObjective" className="text-white">
+                      Cel kampanii (opcjonalnie)
+                    </Label>
+                    <Input
+                      id="campaignObjective"
+                      {...register("campaignObjective")}
+                      placeholder="np. Zwiększenie rezerwacji wizyt"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label htmlFor="campaignStatus" className="text-white">
+                      Status kampanii (opcjonalnie)
+                    </Label>
+                    <Input
+                      id="campaignStatus"
+                      {...register("campaignStatus")}
+                      placeholder="np. Aktywna, Zakończona, Wstrzymana"
+                      className="bg-slate-950 border-slate-700 text-white"
+                    />
+                  </div>
                 </div>
 
                 {/* Opcjonalne dane do wykresów */}
@@ -522,19 +609,11 @@ const ReportGenerator = () => {
                       Widok na pełnym ekranie
                     </Button>
                     <Button
-                      onClick={downloadAsImage}
-                      disabled={isGenerating}
-                      variant="outline"
-                      className="border-pink-600 text-pink-400 hover:bg-pink-950"
-                    >
-                      {isGenerating ? "Pobieranie..." : "Pobierz PNG"}
-                    </Button>
-                    <Button
                       onClick={generatePDF}
                       disabled={isGenerating}
                       className="bg-pink-600 hover:bg-pink-700"
                     >
-                      {isGenerating ? "Generowanie..." : "Pobierz PDF"}
+                      {isGenerating ? "Generowanie..." : "Pobierz PDF pionowy"}
                     </Button>
                   </div>
                 </div>
