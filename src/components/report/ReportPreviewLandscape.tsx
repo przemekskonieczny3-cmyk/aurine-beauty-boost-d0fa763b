@@ -381,54 +381,70 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                   <p className="text-[10px] text-emerald-300">Dalsze działania</p>
                 </div>
               </div>
-              <div className="flex-1 space-y-2 overflow-hidden">
-                {data.recommendations ? (
-                  data.recommendations
-                    .split("\n")
-                    .filter((line) => line.trim())
-                    .slice(0, 3)
-                    .map((rec, idx) => {
-                      const shortRec =
-                        rec.length > 220 ? `${rec.slice(0, 217)}...` : rec;
-                      return (
-                        <div key={idx} className="flex gap-2.5 items-start">
-                          <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
-                          </div>
-                          <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">{shortRec}</p>
-                        </div>
-                      );
-                    })
-                ) : (
-                  <>
-                    <div className="flex gap-2.5 items-start">
-                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-emerald-400">1</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Zwiększ budżet na kampanie w godzinach popołudniowych (16-20), kiedy rezerwacje są najwyższe</p>
+        <div className="space-y-2">
+          {data.recommendations ? (
+            data.recommendations
+              .split("\n")
+              .filter((line) => line.trim())
+              .slice(0, 5)
+              .map((rec, idx) => {
+                const shortRec =
+                  rec.length > 180 ? `${rec.slice(0, 177)}...` : rec;
+                return (
+                  <div key={idx} className="flex gap-2">
+                    <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
                     </div>
-                    <div className="flex gap-2.5 items-start">
-                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-emerald-400">2</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Uruchom kampanie retargetingowe dla osób, które kliknęły ale nie zarezerwowały wizyty</p>
-                    </div>
-                    <div className="flex gap-2.5 items-start">
-                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-emerald-400">3</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Przetestuj kreacje z ofertami weekendowymi, aby zwiększyć rezerwacje w soboty i niedziele</p>
-                    </div>
-                    <div className="flex gap-2.5 items-start">
-                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-emerald-400">4</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Skoncentruj się na targetowaniu lokalnym (5km wokół salonu) dla lepszej jakości ruchu</p>
-                    </div>
-                  </>
-                )}
+                    <p className="text-[11px] text-zinc-300 leading-relaxed">{shortRec}</p>
+                  </div>
+                );
+              })
+          ) : (
+            <>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">1</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Zwiększ budżet w godzinach popołudniowych (16-20), kiedy najwięcej klientek rezerwuje wizyty.
+                </p>
               </div>
-            </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">2</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Dodaj kampanię remarketingową do osób, które kliknęły reklamę, ale nie dokończyły rezerwacji.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">3</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Pokaż w kreacjach efekt "przed i po" oraz opinie zadowolonych klientek, żeby zwiększyć zaufanie.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">4</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Testuj różne formaty kreacji (karuzele, video) i śledź, które generują najwyższe zaangażowanie.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-emerald-400">5</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                  Wprowadź promocje sezonowe i limitowane oferty, aby zwiększyć pilność i współczynnik konwersji.
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
           </div>
 
           {/* Footer */}
