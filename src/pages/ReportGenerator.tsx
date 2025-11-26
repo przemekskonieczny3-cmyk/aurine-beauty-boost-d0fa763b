@@ -50,6 +50,22 @@ const ReportGenerator = () => {
     resolver: zodResolver(reportSchema),
   });
 
+  const applyExportStyles = (root: HTMLElement) => {
+    const targets = root.querySelectorAll<HTMLElement>("[data-export-solid='true']");
+    const originals: Array<{ el: HTMLElement; className: string }> = [];
+
+    targets.forEach((el) => {
+      originals.push({ el, className: el.className });
+      el.classList.add("report-export-solid");
+    });
+
+    return () => {
+      originals.forEach(({ el, className }) => {
+        el.className = className;
+      });
+    };
+  };
+
   const onSubmit = async (data: ReportFormData) => {
     // Jeśli nie ma rekomendacji, generuj je przez AI
     if (!data.recommendations || data.recommendations.trim() === "") {
@@ -88,19 +104,21 @@ const ReportGenerator = () => {
     const element = document.getElementById("report-preview");
     if (!element) return;
 
+    const originalWidth = element.style.width;
+    const originalAspect = element.style.aspectRatio;
+    const originalMaxWidth = element.style.maxWidth;
+
     setIsGenerating(true);
+    const cleanupExportStyles = applyExportStyles(element);
+
     try {
       // Zapewnij stałą szerokość A4 na potrzeby PDF (pionowo)
-      const originalWidth = element.style.width;
-      const originalAspect = element.style.aspectRatio;
-      const originalMaxWidth = element.style.maxWidth;
-
       element.style.width = "210mm"; // szerokość A4
       element.style.aspectRatio = "";
       element.style.maxWidth = "none";
 
       const canvas = await html2canvas(element, {
-        scale: 1.5, // Niższa skala = lżejszy PDF
+        scale: 1, // Niższa skala = lżejszy PDF
         backgroundColor: "#050509",
         width: 794, // szerokość A4 w px przy 96 DPI
         windowWidth: 794,
@@ -108,12 +126,7 @@ const ReportGenerator = () => {
         allowTaint: true,
       });
 
-      // Przywrócenie oryginalnych stylów
-      element.style.width = originalWidth;
-      element.style.aspectRatio = originalAspect;
-      element.style.maxWidth = originalMaxWidth;
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.8);
+      const imgData = canvas.toDataURL("image/jpeg", 0.65);
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -156,6 +169,10 @@ const ReportGenerator = () => {
         variant: "destructive",
       });
     } finally {
+      element.style.width = originalWidth;
+      element.style.aspectRatio = originalAspect;
+      element.style.maxWidth = originalMaxWidth;
+      cleanupExportStyles();
       setIsGenerating(false);
     }
   };
@@ -165,6 +182,8 @@ const ReportGenerator = () => {
     if (!element) return;
 
     setIsGenerating(true);
+    const cleanupExportStyles = applyExportStyles(element);
+
     try {
       const rect = element.getBoundingClientRect();
       const canvas = await html2canvas(element, {
@@ -194,10 +213,10 @@ const ReportGenerator = () => {
         variant: "destructive",
       });
     } finally {
+      cleanupExportStyles();
       setIsGenerating(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-[hsl(var(--brand-dark))] p-8">
       <div className={containerClass}>

@@ -104,7 +104,10 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
 
             <div className="space-y-3 text-sm">
               <div className="pb-3 border-b border-zinc-800/50">
-                <p className="font-semibold text-base text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-300">
+                <p
+                  className="font-semibold text-base text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-300"
+                  data-export-solid="true"
+                >
                   {data.clientName || "Salon Beauty"}
                 </p>
                 <p className="text-zinc-400 text-xs mt-1">{data.city || "Lokalizacja"}</p>
@@ -116,7 +119,10 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-zinc-500">Budżet</span>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-400 font-semibold">
+                  <span
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-400 font-semibold"
+                    data-export-solid="true"
+                  >
                     {data.budget ? `${data.budget} PLN` : "—"}
                   </span>
                 </div>
@@ -169,7 +175,10 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
           {/* Header */}
           <header className="flex items-start justify-between">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+              <h1
+                className="text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent"
+                data-export-solid="true"
+              >
                 Analytics Dashboard
               </h1>
               <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
