@@ -2,14 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import GeneratorSelector from "./pages/GeneratorSelector";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ReportGenerator from "./pages/ReportGenerator";
-import InvoiceGenerator from "./pages/InvoiceGenerator";
-import ContractGenerator from "./pages/ContractGenerator";
-import DocumentHistory from "./pages/DocumentHistory";
 import NotFound from "./pages/NotFound";
-
 
 const queryClient = new QueryClient();
 
@@ -20,11 +15,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<GeneratorSelector />} />
-          <Route path="/report-generator" element={<ReportGenerator />} />
-          <Route path="/invoice-generator" element={<InvoiceGenerator />} />
-          <Route path="/contract-generator" element={<ContractGenerator />} />
-          <Route path="/document-history" element={<DocumentHistory />} />
+          <Route path="/" element={<ReportGenerator />} />
+          <Route path="/report-generator" element={<Navigate to="/" replace />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
