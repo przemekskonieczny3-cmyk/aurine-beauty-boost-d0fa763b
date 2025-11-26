@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ReportPreview } from "@/components/report/ReportPreview";
 import { ReportPreviewLandscape } from "@/components/report/ReportPreviewLandscape";
@@ -48,6 +49,8 @@ const ReportGenerator = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<ReportFormData>({
     resolver: zodResolver(reportSchema),
   });
@@ -98,6 +101,10 @@ const ReportGenerator = () => {
     setIsGenerating(true);
 
     try {
+      const rect = element.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
       const imgData = await toPng(element, {
         cacheBust: true,
         pixelRatio: 2,
@@ -105,27 +112,13 @@ const ReportGenerator = () => {
       });
 
       const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
+        orientation: height >= width ? "portrait" : "landscape",
+        unit: "px",
+        format: [width, height],
         compress: true,
       });
 
-      const imgProps = pdf.getImageProperties(imgData);
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      const imgWidth = imgProps.width;
-      const imgHeight = imgProps.height;
-      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-
-      const printWidth = imgWidth * ratio;
-      const printHeight = imgHeight * ratio;
-
-      const x = (pageWidth - printWidth) / 2;
-      const y = (pageHeight - printHeight) / 2;
-
-      pdf.addImage(imgData, "PNG", x, y, printWidth, printHeight, undefined, "FAST");
+      pdf.addImage(imgData, "PNG", 0, 0, width, height, undefined, "FAST");
       pdf.save(`raport-pionowy-${Date.now()}.pdf`);
 
       toast({
@@ -151,6 +144,10 @@ const ReportGenerator = () => {
     setIsGenerating(true);
 
     try {
+      const rect = element.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
       const imgData = await toPng(element, {
         cacheBust: true,
         pixelRatio: 2,
@@ -158,27 +155,13 @@ const ReportGenerator = () => {
       });
 
       const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
+        orientation: width >= height ? "landscape" : "portrait",
+        unit: "px",
+        format: [width, height],
         compress: true,
       });
 
-      const imgProps = pdf.getImageProperties(imgData);
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      const imgWidth = imgProps.width;
-      const imgHeight = imgProps.height;
-      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-
-      const printWidth = imgWidth * ratio;
-      const printHeight = imgHeight * ratio;
-
-      const x = (pageWidth - printWidth) / 2;
-      const y = (pageHeight - printHeight) / 2;
-
-      pdf.addImage(imgData, "PNG", x, y, printWidth, printHeight, undefined, "FAST");
+      pdf.addImage(imgData, "PNG", 0, 0, width, height, undefined, "FAST");
       pdf.save(`raport-16-9-${Date.now()}.pdf`);
 
       toast({
@@ -509,12 +492,20 @@ const ReportGenerator = () => {
                     <Label htmlFor="campaignStatus" className="text-white">
                       Status kampanii (opcjonalnie)
                     </Label>
-                    <Input
-                      id="campaignStatus"
-                      {...register("campaignStatus")}
-                      placeholder="np. Aktywna, Zakończona, Wstrzymana"
-                      className="bg-slate-950 border-slate-700 text-white"
-                    />
+                    <Select
+                      value={watch("campaignStatus") || ""}
+                      onValueChange={(value) => setValue("campaignStatus", value, { shouldValidate: true })}
+                    >
+                      <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
+                        <SelectValue placeholder="Wybierz status kampanii" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-950 border-slate-700 text-white">
+                        <SelectItem value="Aktywna">Aktywna</SelectItem>
+                        <SelectItem value="Zakończona">Zakończona</SelectItem>
+                        <SelectItem value="Wstrzymana">Wstrzymana</SelectItem>
+                        <SelectItem value="Planowana">Planowana</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
