@@ -14,6 +14,8 @@ interface ReportData {
   conversions?: string;
   costPerConversion?: string;
   bookings?: string;
+  campaignObjective?: string;
+  campaignStatus?: string;
   engagementRate?: string;
   weeklyReachData?: string;
   weeklyClicksData?: string;
@@ -145,7 +147,7 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                   <p className="text-xs font-semibold text-white">Cel kampanii</p>
                 </div>
                 <p className="text-[10px] text-zinc-400 leading-relaxed">
-                  Zwiększenie rezerwacji wizyt w salonie beauty poprzez targetowane kampanie Facebook Ads
+                  {data.campaignObjective || "Zwiększenie rezerwacji wizyt w salonie beauty poprzez targetowane kampanie Facebook Ads"}
                 </p>
               </div>
 
@@ -158,7 +160,37 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
                   <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                  <span className="text-[9px] text-emerald-300 font-medium">Aktywna</span>
+                  <span className="text-[9px] text-emerald-300 font-medium">{data.campaignStatus || "Aktywna"}</span>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-950/30 via-purple-900/20 to-transparent rounded-xl p-4 border border-purple-700/30">
+                <p className="text-[9px] uppercase tracking-wider text-purple-300 mb-3">Kluczowe wskaźniki</p>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-400">Średni koszt kliknięcia</span>
+                    <span className="text-[11px] font-bold text-purple-300">
+                      {data.clicks && data.budget ? 
+                        `${(parseNumber(data.budget) / parseNumber(data.clicks)).toFixed(2)} PLN` 
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-400">Współczynnik konwersji</span>
+                    <span className="text-[11px] font-bold text-pink-300">
+                      {data.conversions && data.clicks ? 
+                        `${((parseNumber(data.conversions) / parseNumber(data.clicks)) * 100).toFixed(1)}%` 
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-400">ROI kampanii</span>
+                    <span className="text-[11px] font-bold text-emerald-300">
+                      {data.bookings && data.budget ? 
+                        `${((parseNumber(data.bookings) * 150) / parseNumber(data.budget) * 100).toFixed(0)}%` 
+                        : "—"}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -349,41 +381,41 @@ export const ReportPreviewLandscape = ({ data }: ReportPreviewLandscapeProps) =>
                   <p className="text-[10px] text-emerald-300">Dalsze działania</p>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+              <div className="flex-1 space-y-2.5 overflow-hidden">
                 {data.recommendations ? (
-                  data.recommendations.split('\n').filter(line => line.trim()).map((rec, idx) => (
-                    <div key={idx} className="flex gap-3 group">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/20 transition-colors">
-                        <span className="text-[10px] font-bold text-emerald-400">{idx + 1}</span>
+                  data.recommendations.split('\n').filter(line => line.trim()).slice(0, 5).map((rec, idx) => (
+                    <div key={idx} className="flex gap-2.5 items-start">
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-emerald-400">{idx + 1}</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed">{rec}</p>
+                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">{rec}</p>
                     </div>
                   ))
                 ) : (
                   <>
-                    <div className="flex gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[10px] font-bold text-emerald-400">1</span>
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-emerald-400">1</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed">Zwiększ budżet na kampanie w godzinach popołudniowych (16-20), kiedy rezerwacje są najwyższe</p>
+                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Zwiększ budżet na kampanie w godzinach popołudniowych (16-20), kiedy rezerwacje są najwyższe</p>
                     </div>
-                    <div className="flex gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[10px] font-bold text-emerald-400">2</span>
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-emerald-400">2</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed">Uruchom kampanie retargetingowe dla osób, które kliknęły ale nie zarezerwowały wizyty</p>
+                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Uruchom kampanie retargetingowe dla osób, które kliknęły ale nie zarezerwowały wizyty</p>
                     </div>
-                    <div className="flex gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[10px] font-bold text-emerald-400">3</span>
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-emerald-400">3</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed">Przetestuj kreacje z ofertami weekendowymi, aby zwiększyć rezerwacje w soboty i niedziele</p>
+                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Przetestuj kreacje z ofertami weekendowymi, aby zwiększyć rezerwacje w soboty i niedziele</p>
                     </div>
-                    <div className="flex gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[10px] font-bold text-emerald-400">4</span>
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-emerald-400">4</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed">Skoncentruj się na targetowaniu lokalnym (5km wokół salonu) dla lepszej jakości ruchu</p>
+                      <p className="text-[10px] text-zinc-300 leading-relaxed flex-1">Skoncentruj się na targetowaniu lokalnym (5km wokół salonu) dla lepszej jakości ruchu</p>
                     </div>
                   </>
                 )}

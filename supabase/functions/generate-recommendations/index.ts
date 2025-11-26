@@ -19,11 +19,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY not configured");
     }
 
-    const prompt = `Jesteś doświadczonym specjalistą od Facebook Ads, który od lat współpracuje z salonami beauty. Rozmawiasz bezpośrednio z właścicielką salonu ${data.clientName} w ${data.city}. 
+    const prompt = `Jesteś ekspertem od marketingu Facebook Ads dla branży beauty. Przeanalizuj wyniki kampanii salonu ${data.clientName} z ${data.city} i napisz 4-5 profesjonalnych rekomendacji strategicznych.
 
-Przeanalizuj wyniki jej ostatniej kampanii i napisz 4-5 konkretnych, przyjaznych rekomendacji - tak jakbyś rozmawiał z koleżanką, która prowadzi swój biznes. Używaj "ty" i "twój", mów wprost i zrozumiale, bez korporacyjnego języka.
-
-Wyniki kampanii:
+Dane kampanii do analizy:
 - Okres: ${data.period}
 - Budżet: ${data.budget} PLN
 - Wyświetlenia: ${data.impressions}
@@ -34,9 +32,14 @@ Wyniki kampanii:
 - Koszt na konwersję: ${data.costPerConversion} PLN
 - Rezerwacje: ${data.bookings} wizyt
 
-Napisz rekomendacje w stylu: "Zwiększ budżet w weekendy o 25% - wtedy masz najlepsze rezultaty i najniższy koszt klienta" zamiast "Zalecamy optymalizację alokacji budżetu w okresach wysokiej konwersji".
+Stwórz rekomendacje odnoszące się bezpośrednio do tych danych z konkretnymi sugestiami na następne miesiące. 
+Każda rekomendacja powinna:
+- Rozpoczynać się od konkretnej akcji
+- Odnosić się do faktycznych wyników (CTR, koszt konwersji, liczba rezerwacji)
+- Zawierać konkretne liczby lub procenty
+- Być profesjonalna ale zrozumiała dla właściciela salonu
 
-Każda rekomendacja to 1-2 zdania, konkretna liczba lub akcja, ludzki ton. Bez numeracji, każda w nowej linii.`;
+Format: każda rekomendacja w osobnej linii, bez numeracji. Ton: merytoryczny, oparty na danych, profesjonalny.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -49,7 +52,7 @@ Każda rekomendacja to 1-2 zdania, konkretna liczba lub akcja, ludzki ton. Bez n
         messages: [
           {
             role: "system",
-            content: "Jesteś doświadczonym specjalistą od marketingu dla salonów beauty. Piszesz w ludzki, ciepły i bezpośredni sposób - jak przyjaciel udzielający rady, nie jak korporacyjny konsultant. Używasz 'ty' i mówisz konkretnie, z liczbami i faktami."
+            content: "Jesteś ekspertem od Facebook Ads dla salonów beauty. Tworzysz profesjonalne, merytoryczne rekomendacje oparte na faktycznych danych kampanii. Twoim celem jest dostarczenie konkretnych, działających strategii na kolejne miesiące. Używaj precyzyjnych danych i liczb z analizy."
           },
           {
             role: "user",

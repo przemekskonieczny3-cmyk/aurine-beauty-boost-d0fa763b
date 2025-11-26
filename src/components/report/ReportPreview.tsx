@@ -14,6 +14,8 @@ interface ReportData {
   conversions?: string;
   costPerConversion?: string;
   bookings?: string;
+  campaignObjective?: string;
+  campaignStatus?: string;
   engagementRate?: string;
   weeklyReachData?: string;
   weeklyClicksData?: string;
@@ -76,7 +78,7 @@ export const ReportPreview = ({ data }: ReportPreviewProps) => {
   return (
     <div
       id="report-preview"
-      className="bg-black text-white rounded-3xl shadow-2xl overflow-hidden w-[794px] min-h-[1123px] mx-auto p-10"
+      className="bg-black text-white rounded-3xl shadow-2xl overflow-hidden w-full min-h-screen p-10"
     >
       {/* Header */}
       <header className="flex items-start justify-between mb-10 border-b border-zinc-800 pb-6">
