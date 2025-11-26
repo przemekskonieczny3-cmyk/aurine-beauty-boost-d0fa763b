@@ -32,14 +32,22 @@ Dane kampanii do analizy:
 - Koszt na konwersję: ${data.costPerConversion} PLN
 - Rezerwacje: ${data.bookings} wizyt
 
-Stwórz rekomendacje odnoszące się bezpośrednio do tych danych z konkretnymi sugestiami na następne miesiące. 
-Każda rekomendacja powinna:
-- Rozpoczynać się od konkretnej akcji
-- Odnosić się do faktycznych wyników (CTR, koszt konwersji, liczba rezerwacji)
-- Zawierać konkretne liczby lub procenty
-- Być profesjonalna ale zrozumiała dla właściciela salonu
+WAŻNE WYMAGANIA FORMATOWANIA:
+- Każda rekomendacja zaczyna się od czasownika w bezokoliczniku: "Zwiększyć", "Poprawić", "Testować", "Zoptymalizować", "Rozszerzyć"
+- BEZ gwiazdek, myślników, numeracji czy jakichkolwiek znaków na początku
+- Każda rekomendacja w osobnej linii
+- Maksymalnie 165 znaków na rekomendację
+- Ton: profesjonalny, konkretny, merytoryczny
 
-Format: każda rekomendacja w osobnej linii, bez numeracji. Ton: merytoryczny, oparty na danych, profesjonalny.`;
+Każda rekomendacja powinna:
+- Rozpoczynać się od bezokolicznika akcji (np. "Zwiększyć budżet o 20%...")
+- Odnosić się do faktycznych wyników z danych kampanii
+- Zawierać konkretne liczby lub procenty
+- Być zrozumiała dla właściciela salonu beauty
+
+Przykład dobrego formatu:
+Zwiększyć budżet o 15% aby osiągnąć więcej rezerwacji przy obecnym CTR
+Testować nowe kreacje z ofertami limitowanymi czasowo dla poprawy konwersji`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -52,7 +60,7 @@ Format: każda rekomendacja w osobnej linii, bez numeracji. Ton: merytoryczny, o
         messages: [
           {
             role: "system",
-            content: "Jesteś ekspertem od Facebook Ads dla salonów beauty. Tworzysz profesjonalne, merytoryczne rekomendacje oparte na faktycznych danych kampanii. Twoim celem jest dostarczenie konkretnych, działających strategii na kolejne miesiące. Używaj precyzyjnych danych i liczb z analizy."
+            content: "Jesteś ekspertem od Facebook Ads dla salonów beauty. Tworzysz profesjonalne, merytoryczne rekomendacje oparte na faktycznych danych kampanii. NIGDY nie używaj gwiazdek, myślników ani numeracji. Każda rekomendacja zaczyna się od czasownika w bezokoliczniku (Zwiększyć, Poprawić, Testować, Zoptymalizować). Maksymalnie 165 znaków na rekomendację."
           },
           {
             role: "user",
