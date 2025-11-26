@@ -43,7 +43,25 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<ReportFormData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [reportNumber, setReportNumber] = useState<number>(1);
   const containerClass = isLandscape ? "mx-auto" : "max-w-7xl mx-auto";
+
+  // Funkcja do pobrania i inkrementacji numeru raportu
+  const getNextReportNumber = () => {
+    const currentNumber = parseInt(localStorage.getItem("reportCounter") || "0", 10);
+    const nextNumber = currentNumber + 1;
+    localStorage.setItem("reportCounter", nextNumber.toString());
+    setReportNumber(nextNumber);
+    return nextNumber;
+  };
+
+  // Funkcja do czyszczenia nazwy salonu dla nazwy pliku
+  const sanitizeSalonName = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+  };
 
   const {
     register,
@@ -96,30 +114,33 @@ const ReportGenerator = () => {
 
   const generatePDF = async () => {
     const element = document.getElementById("report-preview");
-    if (!element) return;
+    if (!element || !reportData) return;
 
     setIsGenerating(true);
 
     try {
-      const rect = element.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-
       const imgData = await toPng(element, {
         cacheBust: true,
         pixelRatio: 2,
         backgroundColor: "#050509",
       });
 
+      // A4 portrait w px: 595 x 842 (72 DPI)
       const pdf = new jsPDF({
-        orientation: height >= width ? "portrait" : "landscape",
-        unit: "px",
-        format: [width, height],
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
         compress: true,
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, width, height, undefined, "FAST");
-      pdf.save(`raport-pionowy-${Date.now()}.pdf`);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+      
+      const num = getNextReportNumber();
+      const salonName = sanitizeSalonName(reportData.clientName);
+      pdf.save(`raport-${num}-${salonName}-pionowy.pdf`);
 
       toast({
         title: "PDF wygenerowany!",
@@ -139,30 +160,33 @@ const ReportGenerator = () => {
 
   const generateLandscapePDF = async () => {
     const element = document.getElementById("report-preview-landscape");
-    if (!element) return;
+    if (!element || !reportData) return;
 
     setIsGenerating(true);
 
     try {
-      const rect = element.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-
       const imgData = await toPng(element, {
         cacheBust: true,
         pixelRatio: 2,
         backgroundColor: "#050509",
       });
 
+      // 16:9 landscape w pt: 842 x 595 (zamienione A4)
       const pdf = new jsPDF({
-        orientation: width >= height ? "landscape" : "portrait",
-        unit: "px",
-        format: [width, height],
+        orientation: "landscape",
+        unit: "pt",
+        format: "a4",
         compress: true,
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, width, height, undefined, "FAST");
-      pdf.save(`raport-16-9-${Date.now()}.pdf`);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+      
+      const num = getNextReportNumber();
+      const salonName = sanitizeSalonName(reportData.clientName);
+      pdf.save(`raport-${num}-${salonName}-16-9.pdf`);
 
       toast({
         title: "PDF 16:9 wygenerowany!",
@@ -182,7 +206,7 @@ const ReportGenerator = () => {
 
   const downloadAsImage = async () => {
     const element = document.getElementById("report-preview-landscape");
-    if (!element) return;
+    if (!element || !reportData) return;
 
     setIsGenerating(true);
 
@@ -193,8 +217,11 @@ const ReportGenerator = () => {
         backgroundColor: "#050509",
       });
 
+      const num = getNextReportNumber();
+      const salonName = sanitizeSalonName(reportData.clientName);
+
       const link = document.createElement("a");
-      link.download = `raport-${Date.now()}.png`;
+      link.download = `raport-${num}-${salonName}.png`;
       link.href = imgData;
       link.click();
 
