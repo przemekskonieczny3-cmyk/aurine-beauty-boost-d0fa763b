@@ -185,27 +185,41 @@ const ReportGenerator = () => {
     const cleanupExportStyles = applyExportStyles(element);
 
     try {
-      const rect = element.getBoundingClientRect();
       const canvas = await html2canvas(element, {
         scale: 2,
-        backgroundColor: "#000000",
         useCORS: true,
         allowTaint: true,
-        width: rect.width,
-        height: rect.height,
-        windowWidth: rect.width,
-        windowHeight: rect.height,
+        logging: false,
+        backgroundColor: '#000000',
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById("report-preview-landscape");
+          if (clonedElement) {
+            clonedElement.style.transform = 'none';
+            clonedElement.style.animation = 'none';
+            const allElements = clonedElement.getElementsByTagName('*');
+            for (let el of allElements) {
+              (el as HTMLElement).style.animation = 'none';
+              (el as HTMLElement).style.transition = 'none';
+            }
+          }
+        }
       });
 
-      const link = document.createElement("a");
-      link.download = `raport-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-
-      toast({
-        title: "Obraz pobrany!",
-        description: "Raport został zapisany jako PNG w formacie poziomym 16:9",
-      });
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `raport-${Date.now()}.png`;
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+        
+        toast({
+          title: "Obraz pobrany!",
+          description: "Raport został zapisany jako PNG w formacie poziomym 16:9",
+        });
+      }, 'image/png', 1.0);
     } catch (error) {
       toast({
         title: "Błąd",
