@@ -8,6 +8,7 @@ import ReportGenerator from "./pages/ReportGenerator";
 import InvoiceGenerator from "./pages/InvoiceGenerator";
 import ContractGenerator from "./pages/ContractGenerator";
 import NotFound from "./pages/NotFound";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 
 const queryClient = new QueryClient();
@@ -18,14 +19,17 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<GeneratorSelector />} />
-          <Route path="/report-generator" element={<ReportGenerator />} />
-          <Route path="/invoice-generator" element={<InvoiceGenerator />} />
-          <Route path="/contract-generator" element={<ContractGenerator />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="pb-16 md:pb-0">
+          <Routes>
+            <Route path="/" element={<GeneratorSelector />} />
+            <Route path="/report-generator" element={<ReportGenerator />} />
+            <Route path="/invoice-generator" element={<InvoiceGenerator />} />
+            <Route path="/contract-generator" element={<ContractGenerator />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <MobileBottomNav />
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
